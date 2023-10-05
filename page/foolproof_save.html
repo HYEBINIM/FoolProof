@@ -1,0 +1,1103 @@
+<!-- 
+프로젝트 : 사출기 통합 현황 풀프루프
+시작일자 : 2023-04-05
+제작자 : 임혜빈
+코멘트 : 
+풀프루프 화면에서는 상단 메뉴를 숨겨 사용자가 더 큰 화면을 이용할 수 있도록 함
+원형차트 참조: https://github.com/rendro/easy-pie-chart
+차트예시 참조: https://gahyun-web-diary.tistory.com/110
+시계표시 참조 : https://bbaksae.tistory.com/23
+-->
+
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+
+//테마
+if ($_GET['num'] == "11" || $_GET['num'] == "12" || $_GET['num'] == "13" || $_GET['num'] == "14" || $_GET['num'] == "15") {
+    $menu1 = "고정금형";
+    $menu2 = "이동금형";
+    $menu3 = "회전금형";
+    $menu4 = "호퍼드라이";
+    $menu5 = "냉각수IN";
+    $menu6 = "냉각수OUT";
+    $menu7 = "온수기IN";
+    $menu8 = "온수기OUT";
+} else {
+    $menu1 = "고정금형";
+    $menu2 = "이동금형";
+    $menu3 = "회전금형";
+    $menu4 = "호퍼드라이";
+    $menu5 = "냉각수IN";
+    $menu6 = "냉각수OUT";
+    $menu7 = "온수기IN";
+    $menu8 = "온수기OUT";
+}
+
+$sql00 = "select * from theme where id = '1'";
+$res00 = mysqli_query($conn, $sql00);
+$row00 = mysqli_fetch_array($res00);
+
+if ($row00['theme'] == null) {
+    $theme = 1;
+} else {
+    $theme = $row00['theme'];
+}
+
+//화면 표시
+$sql01 = "select * from result1 where date ='" . date('Y-m-d') . "' and mc_num = '" . sprintf('%03d', $_GET['num']) . "' order by id desc limit 1";
+$res01 = mysqli_query($conn, $sql01);
+$row01 = mysqli_fetch_array($res01);
+
+$show_date = $row01['date'];
+$show_time = $row01['time'];
+$show_count = $row01['data9'];
+
+
+//가장 마지막 두번째를 구하기 위해
+$sql07 = "select * from result1 where date ='" . date('Y-m-d') . "' and mc_num = '" . sprintf('%03d', $_GET['num']) . "' order by id desc limit 2,2";
+$res07 = mysqli_query($conn, $sql07);
+$row07 = mysqli_fetch_array($res07);
+
+$show_time2 = $row07['time'];
+
+//값
+$sql02 = "select * from result1 where mc_num =" . $_GET['num'] . " order by id desc limit 1";
+$res02 = mysqli_query($conn, $sql02);
+$row02 = mysqli_fetch_array($res02);
+
+//분해능
+$sql03 = "select * from cr1 where id='" . $_GET['num'] . "'";
+$res03 = mysqli_query($conn, $sql03);
+$row03 = mysqli_fetch_array($res03);
+
+//최대최소
+$sql04 = "select * from dr1 where id='" . $_GET['num'] . "'";
+$res04 = mysqli_query($conn, $sql04);
+$row04 = mysqli_fetch_array($res04);
+
+$min1 = $row04['a0'];
+$min2 = $row04['a2'];
+$min3 = $row04['a4'];
+$min4 = $row04['a6'];
+$min5 = $row04['a7'];
+$min6 = $row04['a10'];
+$min7 = $row04['a12'];
+$min8 = $row04['a14'];
+
+$max1 = $row04['a1'];
+$max2 = $row04['a3'];
+$max3 = $row04['a5'];
+$max4 = $row04['a7'];
+$max5 = $row04['a9'];
+$max6 = $row04['a11'];
+$max7 = $row04['a13'];
+$max8 = $row04['a15'];
+
+//편차
+$sql08 = "select * from er1 where id='" . $_GET['num'] . "'";
+$res08 = mysqli_query($conn, $sql08);
+$row08 = mysqli_fetch_array($res08);
+
+//적정온도
+$sql09 = "select * from dr2 where id='" . $_GET['num'] . "'";
+$res09 = mysqli_query($conn, $sql09);
+$row09 = mysqli_fetch_array($res09);
+
+$mid1 = $row09['a0'];
+$mid2 = $row09['a1'];
+$mid3 = $row09['a2'];
+$mid4 = $row09['a3'];
+$mid5 = $row09['a4'];
+$mid6 = $row09['a5'];
+$mid7 = $row09['a6'];
+$mid8 = $row09['a7'];
+
+///////////////////////////////////////////////////////////////////////변수 설정
+//분해능이 0일경우 (오토셋 에러 방지)
+if ($row03['a0'] == 0 || $row03['a0'] == null) {
+    $division0 = 1;
+} else {
+    $division0 = $row03['a0'];
+}
+if ($row03['a1'] == 0 || $row03['a1'] == null) {
+    $division1 = 1;
+} else {
+    $division1 = $row03['a1'];
+}
+if ($row03['a2'] == 0 || $row03['a2'] == null) {
+    $division2 = 1;
+} else {
+    $division2 = $row03['a2'];
+}
+if ($row03['a3'] == 0 || $row03['a3'] == null) {
+    $division3 = 1;
+} else {
+    $division3 = $row03['a3'];
+}
+if ($row03['a4'] == 0 || $row03['a4'] == null) {
+    $division4 = 1;
+} else {
+    $division4 = $row03['a4'];
+}
+if ($row03['a5'] == 0 || $row03['a5'] == null) {
+    $division5 = 1;
+} else {
+    $division5 = $row03['a5'];
+}
+if ($row03['a6'] == 0 || $row03['a6'] == null) {
+    $division6 = 1;
+} else {
+    $division6 = $row03['a6'];
+}
+if ($row03['a7'] == 0 || $row03['a7'] == null) {
+    $division7 = 1;
+} else {
+    $division7 = $row03['a7'];
+}
+
+//변수 설정
+if ($_GET['num'] == "11" || $_GET['num'] == "12" || $_GET['num'] == "13" || $_GET['num'] == "14" || $_GET['num'] == "15") {
+    $data1 = $row02['data1'];
+    $data2 = $row02['data2'];
+    $data3 = $row02['data3'];
+    $data4 = $row02['data7'];
+    $data5 = $row02['data4'];
+    $data6 = $row02['data5'];
+    $data7 = $row02['data6'];
+    $data8 = $row02['data8'];
+    $diff_value1 = $row08['a0'];
+    $diff_value2 = $row08['a1'];
+    $diff_value3 = $row08['a2'];
+    $diff_value4 = $row08['a3'];
+    $diff_value5 = $row08['a4'];
+    $diff_value6 = $row08['a5'];
+    $diff_value7 = $row08['a6'];
+    $diff_value8 = $row08['a7'];
+} else {
+    $data1 = $row02['data1'];
+    $data2 = $row02['data2'];
+    $data3 = $row02['data8'];
+    $data4 = $row02['data7'];
+    $data5 = $row02['data3'];
+    $data6 = $row02['data4'];
+    $data7 = $row02['data5'];
+    $data8 = $row02['data6'];
+    $diff_value1 = $row08['a0'];
+    $diff_value2 = $row08['a1'];
+    $diff_value3 = $row08['a2'];
+    $diff_value4 = $row08['a3'];
+    $diff_value5 = $row08['a4'];
+    $diff_value6 = $row08['a5'];
+    $diff_value7 = $row08['a6'];
+    $diff_value8 = $row08['a7'];
+}
+
+//데이터
+$result001 = number_format(($data1 / $division0) + $diff_value1, 2);
+$result002 = number_format(($data2 / $division1) + $diff_value2, 2);
+$result003 = number_format(($data3 / $division2) + $diff_value3, 2);
+$result004 = number_format(($data4 / $division3) + $diff_value4, 2);
+$result005 = number_format(($data5 / $division4) + $diff_value5, 2);
+$result006 = number_format(($data6 / $division5) + $diff_value6, 2);
+$result007 = number_format(($data7 / $division6) + $diff_value7, 2);
+$result008 = number_format(($data8 / $division7) + $diff_value8, 2);
+
+
+//백분율로 나타냄 (값 - 최소값) / (최대값 - 최소값)
+$percent1 = (($result001 - $min1) / ($max1 - $min1)) * 100;
+$percent2 = (($result002 - $min2) / ($max2 - $min2)) * 100;
+$percent3 = (($result003 - $min3) / ($max3 - $min3)) * 100;
+$percent4 = (($result004 - $min4) / ($max4 - $min4)) * 100;
+$percent5 = (($result005 - $min5) / ($max5 - $min5)) * 100;
+$percent6 = (($result006 - $min6) / ($max6 - $min6)) * 100;
+$percent7 = (($result007 - $min7) / ($max7 - $min7)) * 100;
+$percent8 = (($result008 - $min8) / ($max8 - $min8)) * 100;
+
+
+/////////////////////////////////////////////////////////////////////////////////그래프 색깔
+//미사용 값
+if ($data1 == '-1') {
+    $color = "style='color:#31456A'";
+    $graph_color1 = "#31456A";
+}
+//값이 기준보다 작을때
+else if ($min1 >= number_format(($data1 / $division0) + $diff_value1, 2)) {
+    $color = "style='color:#3867D6'";
+    $graph_color1 = "#3867D6";
+}
+//값이 기준보다 클때
+else if ($max1 <= number_format(($data1 / $division0) + $diff_value1, 2)) {
+    $color = "style='color:#F03434'";
+    $graph_color1 = "#F03434";
+}
+//값이 정상일때
+else if (($min1 <= number_format(($data1 / $division0) + $diff_value1, 2)) || ($max1 <= number_format(($data1 / $division0) + $diff_value1, 2))) {
+    $color = "style='color:#00ad42'";
+    $graph_color1 = "#00ad42";
+}
+//에러
+else {
+    $color = "style='color:black'";
+    $graph_color1 = "black";
+}
+
+
+
+if ($data1 == '-1') {
+    $result001 = "ㅡ";
+}
+if ($data2 == '-1') {
+    $result002 = "ㅡ";
+}
+if ($data3 == '-1') {
+    $result003 = "ㅡ";
+}
+if ($data4 == '-1') {
+    $result004 = "ㅡ";
+}
+if ($data5 == '-1') {
+    $result005 = "ㅡ";
+}
+if ($data6 == '-1') {
+    $result006 = "ㅡ";
+}
+if ($data7 == '-1') {
+    $result007 = "ㅡ";
+}
+if ($data8 == '-1') {
+    $result008 = "ㅡ";
+}
+
+//========================================================================= 기준값 토대로 미사용인지 체크
+
+
+//전체 상태 표기
+//미사용이면 검사안함 -- 회색
+if ($row04['index1'] == '1') {
+
+    //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 끔
+    $sql05 = "update controll1 set resp1 = '0' where id='" . $_GET['num'] . "'";
+    $res05 = mysqli_query($conn, $sql05);
+}
+//사용일때 검사
+else {
+
+    //데이터가 -1이면 ㅡ로 표시하고 검사안함
+    if ($result001 == "ㅡ") {
+        //하나라도 값을 벗어나지 않았을때 id값에 맞는 호기의 resp1에 0 ==> 경고등 끔
+        $sql05 = "update controll1 set resp1 = '0' where id='" . $_GET['num'] . "'";
+        $res05 = mysqli_query($conn, $sql05);
+    }
+    //데이터가 -1이 아니면 검사함
+    else {
+        if (($result001 > $max1) || ($result001 < $min1)) {
+            //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+            $sql05 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+            $res05 = mysqli_query($conn, $sql05);
+        }
+    }
+
+    //데이터가 -1이면 ㅡ로 표시하고 검사안함
+    if ($result002 == "ㅡ") {
+        //하나라도 값을 벗어나지 않았을때 id값에 맞는 호기의 resp1에 0 ==> 경고등 끔
+        $sql05 = "update controll1 set resp1 = '0' where id='" . $_GET['num'] . "'";
+        $res05 = mysqli_query($conn, $sql05);
+    }
+    //데이터가 -1이 아니면 검사함
+    else {
+        if (($result002 > $max2) || ($result002 < $min2)) {
+            //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+            $sql05 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+            $res05 = mysqli_query($conn, $sql05);
+        }
+    }
+
+    //데이터가 -1이면 ㅡ로 표시하고 검사안함
+    if ($result003 == "ㅡ") {
+        //하나라도 값을 벗어나지 않았을때 id값에 맞는 호기의 resp1에 0 ==> 경고등 끔
+        $sql05 = "update controll1 set resp1 = '0' where id='" . $_GET['num'] . "'";
+        $res05 = mysqli_query($conn, $sql05);
+    }
+    //데이터가 -1이 아니면 검사함
+    else {
+        if (($result003 > $max3) || ($result003 < $min3)) {
+            //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+            $sql05 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+            $res05 = mysqli_query($conn, $sql05);
+        }
+    }
+
+    //데이터가 -1이면 ㅡ로 표시하고 검사안함
+    if ($result004 == "ㅡ") {
+        //하나라도 값을 벗어나지 않았을때 id값에 맞는 호기의 resp1에 0 ==> 경고등 끔
+        $sql05 = "update controll1 set resp1 = '0' where id='" . $_GET['num'] . "'";
+        $res05 = mysqli_query($conn, $sql05);
+    }
+    //데이터가 -1이 아니면 검사함
+    else {
+        if (($result004 > $max4) || ($result004 < $min4)) {
+            //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+            $sql05 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+            $res05 = mysqli_query($conn, $sql05);
+        }
+    }
+
+    //데이터가 -1이면 ㅡ로 표시하고 검사안함
+    if ($result005 == "ㅡ") {
+        //하나라도 값을 벗어나지 않았을때 id값에 맞는 호기의 resp1에 0 ==> 경고등 끔
+        $sql05 = "update controll1 set resp1 = '0' where id='" . $_GET['num'] . "'";
+        $res05 = mysqli_query($conn, $sql05);
+    }
+    //데이터가 -1이 아니면 검사함
+    else {
+        if (($result005 > $max5) || ($result005 < $min5)) {
+            //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+            $sql05 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+            $res05 = mysqli_query($conn, $sql05);
+        }
+    }
+
+    //데이터가 -1이면 ㅡ로 표시하고 검사안함
+    if ($result006 == "ㅡ") {
+        //하나라도 값을 벗어나지 않았을때 id값에 맞는 호기의 resp1에 0 ==> 경고등 끔
+        $sql05 = "update controll1 set resp1 = '0' where id='" . $_GET['num'] . "'";
+        $res05 = mysqli_query($conn, $sql05);
+    }
+    //데이터가 -1이 아니면 검사함
+    else {
+        if (($result006 > $max6) || ($result006 < $min6)) {
+            //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+            $sql05 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+            $res05 = mysqli_query($conn, $sql05);
+        }
+    }
+
+    //데이터가 -1이면 ㅡ로 표시하고 검사안함
+    if ($result007 == "ㅡ") {
+        //하나라도 값을 벗어나지 않았을때 id값에 맞는 호기의 resp1에 0 ==> 경고등 끔
+        $sql05 = "update controll1 set resp1 = '0' where id='" . $_GET['num'] . "'";
+        $res05 = mysqli_query($conn, $sql05);
+    }
+    //데이터가 -1이 아니면 검사함
+    else {
+        if (($result007 > $max7) || ($result007 < $min7)) {
+            //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+            $sql05 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+            $res05 = mysqli_query($conn, $sql05);
+        }
+    }
+
+    //데이터가 -1이면 ㅡ로 표시하고 검사안함
+    if ($result008 == "ㅡ") {
+        //하나라도 값을 벗어나지 않았을때 id값에 맞는 호기의 resp1에 0 ==> 경고등 끔
+        $sql05 = "update controll1 set resp1 = '0' where id='" . $_GET['num'] . "'";
+        $res05 = mysqli_query($conn, $sql05);
+    }
+    //데이터가 -1이 아니면 검사함
+    else {
+        if (($result008 > $max8) || ($result008 < $min8)) {
+            //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+            $sql05 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+            $res05 = mysqli_query($conn, $sql05);
+        }
+    }
+}
+
+?>
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="google" content="notranslate">
+    <title>EAST</title>
+    <link rel="stylesheet" href="/css/foolproof<?php echo $theme ?>.css">
+    <META HTTP-EQUIV="refresh" CONTENT="10">
+    <!-- JQUERY -->
+    <script src="/js/jquery-3.6.4.min.js"></script>
+</head>
+
+<body>
+    <form method='post' action="/action/foolproof.html">
+        <!-- 전체 판넬 -->
+        <div class="wrapper">
+            <!-- 상단바 -->
+            <div class="top_bar" id='top_bar'>
+                <div class="top_logo">
+                    <a class='logo_item' href="/index.html">EAST</a>
+                </div>
+                <div class="menu">
+                    <a class='menu_item' href="/index.html">메인 화면</a>
+                    <a class='menu_item' href="/page/set1.html">최소 최대</a>
+                    <a class='menu_item' href="/page/set2.html">분해능 설정</a>
+                    <a class='menu_item' href="/page/set3.html">센서 편차</a>
+                    <a class='menu_item' href="/page/theme.html">테마 설정</a>
+                    &nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp&nbsp
+                </div>
+            </div>
+            <!-- /상단바 -->
+
+            <!-- 비디오 -->
+            <!-- <video class="bg-video__content" autoplay muted loop>
+            <source src="/img/bg/bg2.mp4" type="video/webm" />
+        </video> -->
+            <!-- /비디오 -->
+
+
+            <!-- 메인 판넬 -->
+            <div class="main_panel">
+                <img class='bg_panel' src="/img/bg/panel<?php echo $theme; ?>.png" alt="">
+
+                <!-- 호기변경 페이지 -->
+                <div id="change_mc">
+                    <div class="title_change_mc">호기 변경</div>
+                    <div class="box_change_mc">
+                        <?php
+                        //호기를 늘리려면 여기!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                        for ($count = 1; $count <= 19; $count++) {
+                            echo "<div class='btn_change_mc'><a class='btn_text_change_mc' href='/page/foolproof.html?num=" . $count . "'>" . $count . "호기</a></div>";
+                        }
+                        ?>
+                    </div>
+                </div>
+                <!-- /호기변경 페이지 -->
+
+                <!-- 메인 콘텐츠 -->
+                <div class="main_content">
+                    <!-- 상단 파란선 -->
+                    <div class="line"></div>
+                    <div class="overlay"></div>
+                    <!-- 상단 섹션 -->
+                    <div class="top_section">
+                        <div class="top1">
+                            <span class="top_th th1">
+                                <div class="top_menu">
+                                    <!-- <button id='hamburger'>
+                                    <div class='hamburger_item'></div>
+                                    <div class='hamburger_item'></div>
+                                    <div class='hamburger_item'></div>
+                                </button> -->
+                                </div>
+                                날짜
+                            </span>
+                            <span class="top_td td1">
+                                <?php echo $show_date; ?>
+                            </span>
+                        </div>
+                        <div class="top2">
+                            <span class="top_th th2">
+                                시간
+                            </span>
+                            <span class='clock top_td td2' id="clock"></span>
+                        </div>
+
+                        <div class="top3">
+                            <span class="top_th th3">
+                                검사
+                            </span>
+                            <span class="top_td td3">
+                                <?php
+                                if ($show_time != null) {
+                                    echo $show_time;
+                                } else {
+                                    echo '-- : -- : --';
+                                }
+                                ?>
+                            </span>
+                        </div>
+
+                        <div class="top4">
+                            <span class="top_th th4">
+                                호기
+                            </span>
+                            <span class="top_td td4">
+                                <?php
+                                echo $_GET['num'];
+                                $_SESSION['num'] = $_GET['num'];
+                                ?>
+                                호기&nbsp
+                                <div id="show_change_mc">
+                                    <div>▼</div>
+                                </div>
+                            </span>
+                        </div>
+
+                        <div class="top5">
+                            <span class="top_th th5">
+                                수량
+                            </span>
+                            <span class="top_td td5">
+                                <?php
+                                if ($show_count != null) {
+                                    echo $show_count;
+                                } else {
+                                    echo "0";
+                                }
+                                ?>
+                            </span>
+                        </div>
+
+                        <div class="top6">
+                            <?php
+                            $ct = strtotime($show_time) - strtotime($show_time2);
+                            ?>
+                            <span class="top_th th6">
+                                CT
+                            </span>
+                            <span class="top_td td6">
+                                <?php if ($ct > 86400) {
+                                    echo "-";
+                                } else {
+                                    echo $ct;
+                                } ?>
+                            </span>
+                        </div>
+                        <div class="top7">
+                            <span class="top_td td7">&nbsp&nbsp&nbsp&nbsp</span>
+                        </div>
+                    </div>
+                    <!-- /상단 섹션 -->
+                    <div class='temp_panel'>
+
+                        <table>
+                            <tr>
+                                <th>
+                                    <div class='th_left'><?php echo $menu1; ?></div>
+                                </th>
+                                <th>
+                                    <div><?php echo $menu2; ?></div>
+                                </th>
+                                <th>
+                                    <div><?php echo $menu3; ?></div>
+                                </th>
+                                <th>
+                                    <div class='th_right'><?php echo $menu4; ?></div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <div id="chart1" class='chart' data-percent="<?php echo number_format($percent1, 2) ?>" data-scale-color="<?php echo $graph_color1; ?>">
+                                        <div class="box_text">
+                                            <div class="box_text1">
+                                                <div class="text5"><?php if ($mid1 == '') {
+                                                                        echo "ㅡ";
+                                                                    } else {
+                                                                        echo $mid1;
+                                                                    } ?></div>
+                                                <div class="text1" <?php echo $color; ?>><?php echo $result001; ?></div>
+                                            </div>
+                                            <div class="box_text2">
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_left1.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_left1.value--;' value='▼' />
+                                                </div>
+                                                <input id='text_left1' name="text_left1" class="text2" value='<?php echo $row04['a0'] ?>' required>
+                                                <div class="text3">&nbsp/&nbsp</div>
+                                                <input id='text_right1' name="text_right1" class="text4" value='<?php echo $row04['a1'] ?>' required>
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_right1.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_right1.value--;' value='▼' />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <?php
+                                    if ($data2 == '-1') {
+                                        $color = "style='color:#31456A'";
+                                        $graph_color2 = "#31456A";
+                                    } else if ($row04['a2'] >= number_format(($data2 / $division1) + $diff_value2, 2)) {
+                                        $color = "style='color:#3867D6'";
+                                        $graph_color2 = "#3867D6";
+                                    } else if ($row04['a3'] <= number_format(($data2 / $division1) + $diff_value2, 2)) {
+                                        $color = "style='color:#F03434'";
+                                        $graph_color2 = "#F03434";
+                                    } else if (($row04['a2'] <= number_format(($data2 / $division1) + $diff_value2, 2)) || ($row04['a3'] <= number_format(($data2 / $division1) + $diff_value2, 2))) {
+                                        $color = "style='color:#00ad42'";
+                                        $graph_color2 = "#00ad42";
+                                    } else {
+                                        $color = "style='color:black'";
+                                        $graph_color2 = "black";
+                                    }
+                                    ?>
+                                    <div id="chart2" class='chart' data-percent="<?php echo number_format($percent2, 2) ?>" data-scale-color="<?php echo $graph_color2; ?>">
+                                        <div class="box_text">
+                                            <div class="box_text1">
+                                                <div class="text5"><?php if ($mid2 == '') {
+                                                                        echo "ㅡ";
+                                                                    } else {
+                                                                        echo $mid2;
+                                                                    } ?></div>
+                                                <div class="text1" <?php echo $color; ?>><?php echo $result002; ?></div>
+                                            </div>
+                                            <div class="box_text2">
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_left2.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_left2.value--;' value='▼' />
+                                                </div>
+                                                <input id="text_left2" name="text_left2" class="text2" value='<?php echo $row04['a2'] ?>' required>
+                                                <div class="text3">&nbsp/&nbsp</div>
+                                                <input id="text_right2" name="text_right2" class="text4" value='<?php echo $row04['a3'] ?>' required>
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_right2.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_right2.value--;' value='▼' />
+                                                </div>
+                                            </div>
+                                        </div>
+                                </td>
+                                <td>
+                                    <?php
+                                    if ($data3 == '-1') {
+                                        $color = "style='color:#31456A'";
+                                        $graph_color3 = "#31456A";
+                                    } else if ($row04['a4'] >= number_format(($data3 / $division2) + $diff_value3, 2)) {
+                                        $color = "style='color:#3867D6'";
+                                        $graph_color3 = "#3867D6";
+                                    } else if ($row04['a5'] <= number_format(($data3 / $division2) + $diff_value3, 2)) {
+                                        $color = "style='color:#F03434'";
+                                        $graph_color3 = "#F03434";
+                                    } else if (($row04['a4'] <= number_format(($data3 / $division2) + $diff_value3, 2)) || ($row04['a5'] <= number_format(($data3 / $division2) + $diff_value3, 2))) {
+                                        $color = "style='color:#00ad42'";
+                                        $graph_color3 = "#00ad42";
+                                    } else {
+                                        $color = "style='color:black'";
+                                        $graph_color3 = "black";
+                                    }
+                                    ?>
+                                    <div id="chart3" class='chart' data-percent="<?php echo number_format($percent3, 2) ?>" data-scale-color="<?php echo $graph_color3; ?>">
+                                        <right class="box_text">
+                                            <div class="box_text1">
+                                                <div class="text5"><?php if ($mid3 == '') {
+                                                                        echo "ㅡ";
+                                                                    } else {
+                                                                        echo $mid3;
+                                                                    } ?></div>
+                                                <div class="text1" <?php echo $color; ?>><?php echo $result003; ?></div>
+                                            </div>
+                                            <div class="box_text2">
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_left3.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_left3.value--;' value='▼' />
+                                                </div>
+                                                <input id='text_left3' name="text_left3" class="text2" value='<?php echo $row04['a4'] ?>' required>
+                                                <div class="text3">&nbsp/&nbsp</div>
+                                                <input id='text_right3' name="text_right3" class="text4" value='<?php echo $row04['a5'] ?>' required>
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_right3.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_right3.value--;' value='▼' />
+                                                </div>
+                                            </div>
+                                        </right </td>
+                                <td>
+                                    <?php
+                                    if ($data4 == '-1') {
+                                        $color = "style='color:#31456A'";
+                                        $graph_color4 = "#31456A";
+                                    } else if ($row04['a6'] >= number_format(($data4 / $division3) + $diff_value4, 2)) {
+                                        $color = "style='color:#3867D6'";
+                                        $graph_color4 = "#3867D6";
+                                    } else if ($row04['a7'] <= number_format(($data4 / $division3) + $diff_value4, 2)) {
+                                        $color = "style='color:#F03434'";
+                                        $graph_color4 = "#F03434";
+                                    } else if (($row04['a6'] <= number_format(($data4 / $division3) + $diff_value4, 2)) || ($row04['a7'] <= number_format(($data4 / $division3) + $diff_value4, 2))) {
+                                        $color = "style='color:#00ad42'";
+                                        $graph_color4 = "#00ad42";
+                                    } else {
+                                        $color = "style='color:black'";
+                                        $graph_color4 = "black";
+                                    }
+                                    ?>
+                                    <div id="chart4" class='chart' data-percent="<?php echo number_format($percent4, 2) ?>" data-scale-color="<?php echo $graph_color4; ?>">
+                                        <div class="box_text">
+                                            <div class="box_text1">
+                                                <div class="text5"><?php if ($mid4 == '') {
+                                                                        echo "ㅡ";
+                                                                    } else {
+                                                                        echo $mid4;
+                                                                    } ?></div>
+                                                <div class="text1" <?php echo $color; ?>><?php echo $result004; ?></div>
+                                            </div>
+                                            <div class="box_text2">
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_left4.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_left4.value--;' value='▼' />
+                                                </div>
+                                                <input id="text_left4" name="text_left4" class="text2" value='<?php echo $row04['a6'] ?>' required>
+                                                <div class="text3">&nbsp/&nbsp</div>
+                                                <input id="text_right4" name="text_right4" class="text4" value='<?php echo $row04['a7'] ?>' required>
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_right4.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_right4.value--;' value='▼' />
+                                                </div>
+                                            </div>
+                                        </div>
+                                </td>
+                            </tr>
+                            <tr>
+                                <th>
+                                    <div class='th_left'><?php echo $menu5; ?></div>
+                                </th>
+                                <th>
+                                    <div><?php echo $menu6; ?></div>
+                                </th>
+                                <th>
+                                    <div><?php echo $menu7; ?></div>
+                                </th>
+                                <th>
+                                    <div class='th_right'><?php echo $menu8; ?></div>
+                                </th>
+                            </tr>
+                            <tr>
+                                <td>
+                                    <?php
+                                    if ($data5 == '-1') {
+                                        $color = "style='color:#31456A'";
+                                        $graph_color5 = "#31456A";
+                                    } else if ($row04['a8'] >= number_format(($data5 / $division4) + $diff_value5, 2)) {
+                                        $color = "style='color:#3867D6'";
+                                        $graph_color5 = "#3867D6";
+                                    } else if ($row04['a9'] <= number_format(($data5 / $division4) + $diff_value5, 2)) {
+                                        $color = "style='color:#F03434'";
+                                        $graph_color5 = "#F03434";
+                                    } else if (($row04['a8'] <= number_format(($data5 / $division4) + $diff_value5, 2)) || ($row04['a9'] <= number_format(($data5 / $division4) + $diff_value5, 2))) {
+                                        $color = "style='color:#00ad42'";
+                                        $graph_color5 = "#00ad42";
+                                    } else {
+                                        $color = "style='color:black'";
+                                        $graph_color5 = "black";
+                                    }
+                                    ?>
+                                    <div id="chart5" class='chart' data-percent="<?php echo number_format($percent5, 2) ?>" data-scale-color="<?php echo $graph_color5; ?>">
+                                        <div class="box_text">
+                                            <div class="box_text1">
+                                                <div class="text5"><?php if ($mid5 == '') {
+                                                                        echo "ㅡ";
+                                                                    } else {
+                                                                        echo $mid5;
+                                                                    } ?></div>
+                                                <div class="text1" <?php echo $color; ?>><?php echo $result005; ?></div>
+                                            </div>
+                                            <div class="box_text2">
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_left5.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_left5.value--;' value='▼' />
+                                                </div>
+                                                <input id="text_left5" name="text_left5" class="text2" value='<?php echo $row04['a8'] ?>' required>
+                                                <div class="text3">&nbsp/&nbsp</div>
+                                                <input id="text_right5" name="text_right5" class="text4" value='<?php echo $row04['a9'] ?>' required>
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_right5.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_right5.value--;' value='▼' />
+                                                </div>
+                                            </div>
+                                        </div>
+                                </td>
+                                <td>
+                                    <?php
+                                    if ($data6 == '-1') {
+                                        $color = "style='color:#31456A'";
+                                        $graph_color6 = "#31456A";
+                                    } else if ($row04['a10'] >= number_format(($data6 / $division5) + $diff_value6, 2)) {
+                                        $color = "style='color:#3867D6'";
+                                        $graph_color6 = "#3867D6";
+                                    } else if ($row04['a11'] <= number_format(($data6 / $division5) + $diff_value6, 2)) {
+                                        $color = "style='color:#F03434'";
+                                        $graph_color6 = "#F03434";
+                                    } else if (($row04['a10'] <= number_format(($data6 / $division5) + $diff_value6, 2)) || ($row04['a13'] <= number_format(($data6 / $division5) + $diff_value6, 2))) {
+                                        $color = "style='color:#00ad42'";
+                                        $graph_color6 = "#00ad42";
+                                    } else {
+                                        $color = "style='color:black'";
+                                        $graph_color6 = "black";
+                                    }
+                                    ?>
+                                    <div id="chart6" class='chart' data-percent="<?php echo number_format($percent6, 2) ?>" data-scale-color="<?php echo $graph_color6; ?>">
+                                        <div class="box_text">
+                                            <div class="box_text1">
+                                                <div class="text5"><?php if ($mid6 == '') {
+                                                                        echo "ㅡ";
+                                                                    } else {
+                                                                        echo $mid6;
+                                                                    } ?></div>
+                                                <div class="text1" <?php echo $color; ?>><?php echo $result006; ?></div>
+                                            </div>
+                                            <div class="box_text2">
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_left6.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_left6.value--;' value='▼' />
+                                                </div>
+                                                <input id="text_left6" name="text_left6" class="text2" value='<?php echo $row04['a10'] ?>' required>
+                                                <div class="text3">&nbsp/&nbsp</div>
+                                                <input id="text_right6" name="text_right6" class="text4" value='<?php echo $row04['a11'] ?>' required>
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_right6.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_right6.value--;' value='▼' />
+                                                </div>
+                                            </div>
+                                        </div>
+                                </td>
+                                <td>
+                                    <?php
+                                    if ($data7 == '-1') {
+                                        $color = "style='color:#31456A'";
+                                        $graph_color7 = "#31456A";
+                                    } else if ($row04['a12'] >= number_format(($data7 / $division6) + $diff_value7, 2)) {
+                                        $color = "style='color:#3867D6'";
+                                        $graph_color7 = "#3867D6";
+                                    } else if ($row04['a13'] <= number_format(($data7 / $division6) + $diff_value7, 2)) {
+                                        $color = "style='color:#F03434'";
+                                        $graph_color7 = "#F03434";
+                                    } else if (($row04['a12'] <= number_format(($data7 / $division6) + $diff_value7, 2)) || ($row04['a13'] <= number_format(($data7 / $division6) + $diff_value7, 2))) {
+                                        $color = "style='color:#00ad42'";
+                                        $graph_color7 = "#00ad42";
+                                    } else {
+                                        $color = "style='color:black'";
+                                        $graph_color7 = "black";
+                                    }
+                                    ?>
+                                    <div id="chart7" class='chart' data-percent="<?php echo number_format($percent7, 2) ?>" data-scale-color="<?php echo $graph_color7; ?>">
+                                        <div class="box_text">
+                                            <div class="box_text1">
+                                                <div class="text5"><?php if ($mid7 == '') {
+                                                                        echo "ㅡ";
+                                                                    } else {
+                                                                        echo $mid7;
+                                                                    } ?></div>
+                                                <div class="text1" <?php echo $color; ?>><?php echo $result007; ?></div>
+                                            </div>
+                                            <div class="box_text2">
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_left7.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_left7.value--;' value='▼' />
+                                                </div>
+                                                <input id="text_left7" name="text_left7" class="text2" value='<?php echo $row04['a12'] ?>' required>
+                                                <div class="text3">&nbsp/&nbsp</div>
+                                                <input id="text_right7" name="text_right7" class="text4" value='<?php echo $row04['a13'] ?>' required>
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_right7.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_right7.value--;' value='▼' />
+                                                </div>
+                                            </div>
+                                        </div>
+                                </td>
+                                <td>
+                                    <?php
+                                    if ($data8 == '-1') {
+                                        $color = "style='color:#31456A'";
+                                        $graph_color8 = "#31456A";
+                                    } else if ($row04['a14'] >= number_format(($data8 / $division7) + $diff_value8, 2)) {
+                                        $color = "style='color:#3867D6'";
+                                        $graph_color8 = "#3867D6";
+                                    } else if ($row04['a15'] <= number_format(($data8 / $division7) + $diff_value8, 2)) {
+                                        $color = "style='color:#F03434'";
+                                        $graph_color8 = "#F03434";
+                                    } else if (($row04['a14'] <= number_format(($data8 / $division7) + $diff_value8, 2)) || ($row04['a15'] <= number_format(($data8 / $division7) + $diff_value8, 2))) {
+                                        $color = "style='color:#00ad42'";
+                                        $graph_color8 = "#00ad42";
+                                    } else {
+                                        $color = "style='color:black'";
+                                        $graph_color8 = "black";
+                                    }
+                                    ?>
+                                    <div id="chart8" class='chart' data-percent="<?php echo number_format($percent8, 2) ?>" data-scale-color="<?php echo $graph_color8; ?>">
+                                        <div class="box_text">
+                                            <div class="box_text1">
+                                                <div class="text5"><?php if ($mid8 == '') {
+                                                                        echo "ㅡ";
+                                                                    } else {
+                                                                        echo $mid8;
+                                                                    } ?></div>
+                                                <div class="text1" <?php echo $color; ?>><?php echo $result008; ?></div>
+                                            </div>
+                                            <div class="box_text2">
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_left8.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_left8.value--;' value='▼' />
+                                                </div>
+                                                <input id="text_left8" name="text_left8" class="text2" value='<?php echo $row04['a14'] ?>' required>
+                                                <div class="text3">&nbsp/&nbsp</div>
+                                                <input id="text_right8" name="text_right8" class="text4" value='<?php echo $row04['a15'] ?>' required>
+                                                <div class='btn_convert'>
+                                                    <input type='button' onclick='javascript:this.form.text_right8.value++;' value='▲' />
+                                                    <input type='button' onclick='javascript:this.form.text_right8.value--;' value='▼' />
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+                            </tr>
+                        </table>
+
+                    </div>
+                    <!-- /테이블 감싸기 -->
+                </div>
+                <!-- /메인 콘텐츠 -->
+            </div>
+            <!-- /메인 판넬 -->
+        </div>
+        <!-- /전체 판넬 -->
+        <input class="save_convert" type="submit" value="저장">
+
+    </form>
+    <!-- easy-pie-chart -->
+    <script src="/plugins/easy-pie-chart/dist/easypiechart.js"></script>
+
+    <!-- <script src="https://code.jquery.com/jquery-3.6.3.js"></script> -->
+    <script>
+        var element1 = document.querySelector('#chart1');
+
+        new EasyPieChart(element1, {
+            barColor: '<?php echo $graph_color1; ?>', //차트가 그려질 색
+            trackColor: '#ccc', // 차트가 그려지는 트랙의 기본 배경색(chart1 의 회색부분)
+            scaleColor: '#fff', // 차트 테두리에 그려지는 기준선 (chart2	의 테두리 선)
+            lineCap: 'butt', // 차트 선의 모양 chart1 butt / chart2 round / chart3 square
+            lineWidth: 4, // 차트 선의 두께
+            size: 300, // 차트크기
+            animate: 1000, // 그려지는 시간 
+        });
+
+        var element2 = document.querySelector('#chart2');
+
+        new EasyPieChart(element2, {
+            barColor: '<?php echo $graph_color2; ?>', //차트가 그려질 색
+            trackColor: '#ccc', // 차트가 그려지는 트랙의 기본 배경색(chart1 의 회색부분)
+            scaleColor: '#fff', // 차트 테두리에 그려지는 기준선 (chart2	의 테두리 선)
+            lineCap: 'butt', // 차트 선의 모양 chart1 butt / chart2 round / chart3 square
+            lineWidth: 4, // 차트 선의 두께
+            size: 300, // 차트크기
+            animate: 1000, // 그려지는 시간 
+        });
+
+        var element3 = document.querySelector('#chart3');
+
+        new EasyPieChart(element3, {
+            barColor: '<?php echo $graph_color3; ?>', //차트가 그려질 색
+            trackColor: '#ccc', // 차트가 그려지는 트랙의 기본 배경색(chart1 의 회색부분)
+            scaleColor: '#fff', // 차트 테두리에 그려지는 기준선 (chart2	의 테두리 선)
+            lineCap: 'butt', // 차트 선의 모양 chart1 butt / chart2 round / chart3 square
+            lineWidth: 4, // 차트 선의 두께
+            size: 300, // 차트크기
+            animate: 1000, // 그려지는 시간 
+        });
+
+        var element4 = document.querySelector('#chart4');
+
+        new EasyPieChart(element4, {
+            barColor: '<?php echo $graph_color4; ?>', //차트가 그려질 색
+            trackColor: '#ccc', // 차트가 그려지는 트랙의 기본 배경색(chart1 의 회색부분)
+            scaleColor: '#fff', // 차트 테두리에 그려지는 기준선 (chart2	의 테두리 선)
+            lineCap: 'butt', // 차트 선의 모양 chart1 butt / chart2 round / chart3 square
+            lineWidth: 4, // 차트 선의 두께
+            size: 300, // 차트크기
+            animate: 1000, // 그려지는 시간 
+        });
+
+        var element5 = document.querySelector('#chart5');
+
+        new EasyPieChart(element5, {
+            barColor: '<?php echo $graph_color5; ?>', //차트가 그려질 색
+            trackColor: '#ccc', // 차트가 그려지는 트랙의 기본 배경색(chart1 의 회색부분)
+            scaleColor: '#fff', // 차트 테두리에 그려지는 기준선 (chart2	의 테두리 선)
+            lineCap: 'butt', // 차트 선의 모양 chart1 butt / chart2 round / chart3 square
+            lineWidth: 4, // 차트 선의 두께
+            size: 300, // 차트크기
+            animate: 1000, // 그려지는 시간 
+        });
+
+        var element6 = document.querySelector('#chart6');
+
+        new EasyPieChart(element6, {
+            barColor: '<?php echo $graph_color6; ?>', //차트가 그려질 색
+            trackColor: '#ccc', // 차트가 그려지는 트랙의 기본 배경색(chart1 의 회색부분)
+            scaleColor: '#fff', // 차트 테두리에 그려지는 기준선 (chart2	의 테두리 선)
+            lineCap: 'butt', // 차트 선의 모양 chart1 butt / chart2 round / chart3 square
+            lineWidth: 4, // 차트 선의 두께
+            size: 300, // 차트크기
+            animate: 1000, // 그려지는 시간 
+        });
+
+        var element7 = document.querySelector('#chart7');
+
+        new EasyPieChart(element7, {
+            barColor: '<?php echo $graph_color7; ?>', //차트가 그려질 색
+            trackColor: '#ccc', // 차트가 그려지는 트랙의 기본 배경색(chart1 의 회색부분)
+            scaleColor: '#fff', // 차트 테두리에 그려지는 기준선 (chart2	의 테두리 선)
+            lineCap: 'butt', // 차트 선의 모양 chart1 butt / chart2 round / chart3 square
+            lineWidth: 4, // 차트 선의 두께
+            size: 300, // 차트크기
+            animate: 1000, // 그려지는 시간 
+        });
+
+        var element8 = document.querySelector('#chart8');
+
+        new EasyPieChart(element8, {
+            barColor: '<?php echo $graph_color8; ?>', //차트가 그려질 색
+            trackColor: '#ccc', // 차트가 그려지는 트랙의 기본 배경색(chart1 의 회색부분)
+            scaleColor: '#fff', // 차트 테두리에 그려지는 기준선 (chart2	의 테두리 선)
+            lineCap: 'butt', // 차트 선의 모양 chart1 butt / chart2 round / chart3 square
+            lineWidth: 4, // 차트 선의 두께
+            size: 300, // 차트크기
+            animate: 1000, // 그려지는 시간 
+        });
+
+        //==============================================시계==============================================
+        const clock = document.querySelector('.clock');
+
+
+        function getTime() {
+            const time = new Date();
+            const hour = time.getHours();
+            const minutes = time.getMinutes();
+            const seconds = time.getSeconds();
+            //clock.innerHTML = hour +":" + minutes + ":"+seconds;
+            clock.innerHTML = `${hour<10 ? `0${hour}`:hour}:${minutes<10 ? `0${minutes}`:minutes}:${seconds<10 ? `0${seconds}`:seconds}`
+        }
+
+
+        function init() {
+            setInterval(getTime, 1000);
+        }
+
+        init();
+
+        function addZeros(num, digit) { // 자릿수 맞춰주기
+            var zero = '';
+            num = num.toString();
+            if (num.length < digit) {
+                for (i = 0; i < digit - num.length; i++) {
+                    zero += '0';
+                }
+            }
+            return zero + num;
+        }
+        //==============================================상단바==============================================
+        // $('#hamburger').on('click', function() {
+        //     $('#top_bar').addClass('active');
+        //     $('#hamburger').hide();
+        //     $('.overlay').fadeIn();
+        // });
+
+        // $('.overlay').on('click', function() {
+        //     $('#top_bar').removeClass('active');
+        //     $('#hamburger').show();
+        //     $('.overlay').fadeOut();
+        // });
+
+        //==============================================호기 변경==============================================
+        $('#show_change_mc').on('click', function() {
+            $('#change_mc').addClass('active');
+            $('.overlay').fadeIn();
+        });
+
+        $('.overlay').on('click', function() {
+            $('#change_mc').removeClass('active');
+            $('.overlay').fadeOut();
+        });
+    </script>
+</body>
+
+</html>

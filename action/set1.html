@@ -1,0 +1,60 @@
+<!-- 
+프로젝트 : 사출기 통합 현황 풀프루프
+시작일자 : 2023-04-08
+제작자 : 임혜빈
+코멘트 :
+dr1 테이블 사용
+-->
+<meta charset="UTF-8">
+
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+
+
+for ($count = 1; $count <= 19; $count++) {
+
+    if ($_POST['check' . $count . ''] == 'on') {
+        $checkbox = "1";
+    } else {
+        $checkbox = "0";
+    }
+
+    echo $sql = "
+update dr1
+set
+
+a0 = '" . $_POST['min' . $count . '_1'] . "',
+a1 = '" . $_POST['max' . $count . '_1'] . "',
+a2 = '" . $_POST['min' . $count . '_2'] . "',
+a3 = '" . $_POST['max' . $count . '_2'] . "',
+a4 = '" . $_POST['min' . $count . '_3'] . "',
+a5 = '" . $_POST['max' . $count . '_3'] . "',
+a6 = '" . $_POST['min' . $count . '_4'] . "',
+a7 = '" . $_POST['max' . $count . '_4'] . "',
+a8 = '" . $_POST['min' . $count . '_5'] . "',
+a9 = '" . $_POST['max' . $count . '_5'] . "',
+a10 = '" . $_POST['min' . $count . '_6'] . "',
+a11 = '" . $_POST['max' . $count . '_6'] . "',
+a12 = '" . $_POST['min' . $count . '_7'] . "',
+a13 = '" . $_POST['max' . $count . '_7'] . "',
+a14 = '" . $_POST['min' . $count . '_8'] . "',
+a15 = '" . $_POST['max' . $count . '_8'] . "',
+a16 = '" . $_POST['min' . $count . '_9'] . "',
+a17 = '" . $_POST['max' . $count . '_9'] . "',
+index1 = '" . $checkbox . "'
+
+where id = '" . $count . "'
+";
+
+    $res = mysqli_query($conn, $sql);
+}
+
+//업데이트 완료 후 원래페이지로 이동
+echo "
+<script>
+document.location.href='/page/set1.html'
+alert('완료');
+</script>
+";
+?>

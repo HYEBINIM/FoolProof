@@ -1,0 +1,43 @@
+<!-- 
+프로젝트 : 사출기 통합 현황 풀프루프
+시작일자 : 2023-04-08
+제작자 : 임혜빈
+코멘트 :
+cr1 테이블 사용
+-->
+<meta charset="UTF-8">
+
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+
+
+for ($count = 1; $count <= 19; $count++) {
+    echo $sql = "
+update cr1
+set
+
+a0 = '" . $_POST[$count . '_1'] . "',
+a1 = '" . $_POST[$count . '_2'] . "',
+a2 = '" . $_POST[$count . '_3'] . "',
+a3 = '" . $_POST[$count . '_4'] . "',
+a4 = '" . $_POST[$count . '_5'] . "',
+a5 = '" . $_POST[$count . '_6'] . "',
+a6 = '" . $_POST[$count . '_7'] . "',
+a7 = '" . $_POST[$count . '_8'] . "',
+a8 = '" . $_POST[$count . '_9'] . "'
+
+where id = '" . $count . "'
+";
+
+    $res = mysqli_query($conn, $sql);
+}
+
+//업데이트 완료 후 원래페이지로 이동
+echo "
+<script>
+document.location.href = '/page/set2.html';
+alert('완료');
+</script>
+";
+?>

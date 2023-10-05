@@ -1,0 +1,162 @@
+<meta charset="UTF-8">
+
+<?php
+$conn = mysqli_connect("localhost", "server", "00000000", "dataset");
+
+//순서
+// 금형1
+// 금형2
+// 금형3
+// 냉IN
+// 냉OUT
+// 온IN
+// 온OUT
+// 호퍼
+
+$sql = "SELECT * FROM result1 ORDER BY id DESC limit 1";
+$res = mysqli_query($conn, $sql);
+$row = mysqli_fetch_array($res);
+
+//내용을 읽어올 파일명
+$fileName = "sort.txt";
+//사용안함 저장용임~~~~~
+
+
+//파일이 존재하는지
+if (file_exists($fileName)) {
+    //파일 열기 
+    $fp = fopen($fileName, 'r');
+    if ($fp) {
+        //파일 읽기 
+        $fr = fread($fp, filesize($fileName));
+        if ($fr) {
+            //아이디가 같지 않으면
+            if ($row['id'] != $fr) {
+                //데이터 베이스 정렬 시작
+                if ($row['mc_num'] == '011' || $row['mc_num'] == '012' || $row['mc_num'] == '013' || $row['mc_num'] == '014' || $row['mc_num'] == '015') {
+                    //회전금형(11,12,13,14,15호기일 경우)
+                    echo $sql01 = "INSERT into result2
+                    (
+                        date,
+                        time,
+                        program,
+                        lot_name,
+                        lot_num,
+                        mc_code,
+                        mc_num,
+                        contents,
+                        data1,
+                        data2,
+                        data3,
+                        data4,
+                        data5,
+                        data6,
+                        data7,
+                        data8,
+                        data9,
+                        data10,
+                        img_name,
+                        conclusion1,
+                        index1,
+                        ct1
+                    )
+                    values
+                    (
+                        '" . $row['date'] . "',
+                        '" . $row['time'] . "',
+                        '" . $row['program'] . "',
+                        '" . $row['lot_name'] . "',
+                        '" . $row['lot_num'] . "',
+                        '" . $row['mc_code'] . "',
+                        '" . $row['mc_num'] . "',
+                        '" . $row['contents'] . "',
+                        '" . $row['data1'] . "',
+                        '" . $row['data2'] . "',
+                        '" . $row['data3'] . "',
+                        '" . $row['data4'] . "',
+                        '" . $row['data5'] . "',
+                        '" . $row['data6'] . "',
+                        '" . $row['data8'] . "',
+                        '" . $row['data7'] . "',
+                        '" . $row['data9'] . "',
+                        '" . $row['data10'] . "',
+                        '" . $row['img_name'] . "',
+                        '" . $row['conclusion1'] . "',
+                        '" . $row['index1'] . "',
+                        '" . $row['ct1'] . "'
+                    )
+                    ";
+                    $res01 = mysqli_query($conn, $sql01);
+                } else {
+                    //일반금형
+                    echo $sql01 = "INSERT into result2
+                    (
+                        date,
+                        time,
+                        program,
+                        lot_name,
+                        lot_num,
+                        mc_code,
+                        mc_num,
+                        contents,
+                        data1,
+                        data2,
+                        data3,
+                        data4,
+                        data5,
+                        data6,
+                        data7,
+                        data8,
+                        data9,
+                        data10,
+                        img_name,
+                        conclusion1,
+                        index1,
+                        ct1
+                    )
+                    values
+                    (
+                        '" . $row['date'] . "',
+                        '" . $row['time'] . "',
+                        '" . $row['program'] . "',
+                        '" . $row['lot_name'] . "',
+                        '" . $row['lot_num'] . "',
+                        '" . $row['mc_code'] . "',
+                        '" . $row['mc_num'] . "',
+                        '" . $row['contents'] . "',
+                        '" . $row['data1'] . "',
+                        '" . $row['data2'] . "',
+                        '" . $row['data8'] . "',
+                        '" . $row['data3'] . "',
+                        '" . $row['data4'] . "',
+                        '" . $row['data5'] . "',
+                        '" . $row['data6'] . "',
+                        '" . $row['data7'] . "',
+                        '" . $row['data9'] . "',
+                        '" . $row['data10'] . "',
+                        '" . $row['img_name'] . "',
+                        '" . $row['conclusion1'] . "',
+                        '" . $row['index1'] . "',
+                        '" . $row['ct1'] . "'
+                    )
+                    ";
+                    $res01 = mysqli_query($conn, $sql01);
+                }
+
+                //현재 아이디 저장
+                $fp = fopen($fileName, "w");
+                fwrite($fp, $row['id']);
+            } else {
+                // echo "아이디 같음";
+            }
+            //파일 닫기
+            fclose($fp);
+        } else {
+            echo "파일 읽기에 실패하였습니다.";
+        } //end if_fr
+    } else {
+        echo "파일 열기에 실패하였습니다.";
+    } //end if_fp
+} else {
+    echo "파일이 존재하지 않습니다.";
+} //end if_fe

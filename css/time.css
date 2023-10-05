@@ -1,0 +1,221 @@
+:root{
+    --primary-color : #3867D6;
+    --panel-color : #F0F3F5;
+    --text-color : #29363d;
+    --disable-color : #536c79;
+    --icon-color : #a2b8ec;
+    --red-color : #F03434;
+    --green-color : #20BF6B;
+    --white-color : #fff;
+    --yellow-color : #F6BB42;
+}
+
+@font-face {
+    font-family: 'SCDream1';
+    src: url("/font/SCDream1.otf");
+}
+@font-face {
+    font-family: 'SCDream2';
+    src: url("/font/SCDream2.otf");
+}
+@font-face {
+    font-family: 'SCDream3';
+    src: url("/font/SCDream3.otf");
+}
+@font-face {
+    font-family: 'SCDream4';
+    src: url("/font/SCDream4.otf");
+}
+@font-face {
+    font-family: 'SCDream5';
+    src: url("/font/SCDream5.otf");
+}
+@font-face {
+    font-family: 'SCDream6';
+    src: url("/font/SCDream6.otf");
+}
+@font-face {
+    font-family: 'SCDream7';
+    src: url("/font/SCDream7.otf");
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: SCDream4;
+}
+
+body, html{
+    width: 100%;
+    height: 100%;
+}
+
+a{
+    text-decoration: none;
+    cursor: pointer;
+}
+
+table{
+    border-collapse: collapse;
+}
+
+
+/* 메인 판넬 */
+.wrapper{
+    width: 100%;
+    height: 100%;
+    background: var(--panel-color);
+}
+
+/* 상단바 */
+.top_bar{
+    width: 100%;
+    height: 60px;
+    background: var(--white-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* 로고 인덱스 */
+.logo{
+min-width: 200px;
+}
+
+.logo_item{
+    font-family: SCDream7;
+    margin-left: 18px;
+    font-size: 1.8rem;
+    line-height: 60px;
+    color: var(--primary-color);
+}
+
+.menu{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    min-width: 600px;
+    margin-right: 8px; /*왼쪽 마진이 18이나 menu_item 양옆마진을 10 줬으므로 오른쪽 마진은 8만 줌 */
+}
+
+.menu_item{
+    width: 100px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-color);
+    border: var(--primary-color) 1px solid;
+    border-radius: 6px;
+    margin: 0px 10px;
+}
+
+.active{
+    width: 100px;
+    height: 40px;
+    background: var(--primary-color);
+    color: var(--white-color);
+    border-radius: 6px;
+    border: var(--primary-color) 1px solid;
+    line-height: 60px;
+    background-color: var(--primary-color);
+}
+
+
+/* 메인 판넬 */
+.main_panel{
+    width: 100%;
+    height: calc(100% - 60px);
+    background: var(--panel-color);
+    display: flex; /* 메인 콘텐츠를 중앙에 위치시킴 */
+    align-items: center;
+    justify-content: center;
+}
+
+/* 메인 콘텐츠 */
+.content1{
+    width: 20%; /* 좌우 마진값 빼줌*/
+    height: calc(100% - 40px - 1px); /* 상하 마진값과 파란선 높이만큼 빼줌 */
+    background: var(--white-color);
+    margin-left: 20px;
+}
+
+/* 파란선 */
+.content1 .line{
+    width: 100%;
+    height: 1px;
+    background-color: var(--primary-color);
+}
+
+/* 제목 */
+.content1 .title{
+font-size: 1.4rem;
+font-weight: 600;
+color: var(--primary-color);
+margin: 16px 0px;
+margin-left: 18px;
+}
+
+/* 메인 콘텐츠 */
+.content2{
+    width: 80%; /* 좌우 마진값 빼줌*/
+    height: calc(100% - 40px - 1px); /* 상하 마진값과 파란선 높이만큼 빼줌 */
+    background: var(--white-color);
+    margin-left: 20px;
+    margin-right: 20px;
+}
+
+/* 파란선 */
+.content2 .line{
+    width: 100%;
+    height: 1px;
+    background-color: var(--primary-color);
+}
+
+/* 제목 */
+.content2 .title{
+font-size: 1.4rem;
+font-weight: 600;
+color: var(--primary-color);
+margin: 16px 0px;
+margin-left: 18px;
+}
+
+/* 차트 */
+.chart{
+    width: 80%;
+    height: auto;
+    position: relative;
+}
+
+canvas{
+    width: 100%;
+    height: auto;
+}
+
+.text{
+    position: absolute;
+    top: 45%;
+    left: 45%;
+}
+
+/* 막대그래프 */
+.progress-bar {
+    width: 100%;
+    height: 30px;
+    background-color: #dedede;
+    font-weight: 600;
+    font-size: .8rem;
+}
+
+.progress-bar .progress {
+    width: 72%; 
+    height: 30px;
+    padding: 0;
+    text-align: center;
+    background-color: #3867D6;
+    color: #111;
+}

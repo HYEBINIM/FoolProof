@@ -1,0 +1,76 @@
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+?>
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+</head>
+
+<body>
+
+    <?php
+    // 테스트용
+    // echo $_POST['text_left1'];
+    // echo $_POST['text_left2'];
+    // echo $_POST['text_left3'];
+    // echo $_POST['text_left4'];
+    // echo $_POST['text_left5'];
+    // echo $_POST['text_left6'];
+    // echo $_POST['text_left7'];
+    // echo $_POST['text_left8'];
+
+    // echo $_POST['text_right1'];
+    // echo $_POST['text_right2'];
+    // echo $_POST['text_right3'];
+    // echo $_POST['text_right4'];
+    // echo $_POST['text_right5'];
+    // echo $_POST['text_right6'];
+    // echo $_POST['text_right7'];
+    // echo $_POST['text_right8'];
+
+    // echo $_SESSION['num'];
+
+    echo $sql = "
+            update dr1
+            set
+
+            a0 = '" . $_POST['text_left1'] . "',
+            a1 = '" . $_POST['text_right1'] . "',
+            a2 = '" . $_POST['text_left2'] . "',
+            a3 = '" . $_POST['text_right2'] . "',
+            a4 = '" . $_POST['text_left3'] . "',
+            a5 = '" . $_POST['text_right3'] . "',
+            a6 = '" . $_POST['text_left4'] . "',
+            a7 = '" . $_POST['text_right4'] . "',
+            a8 = '" . $_POST['text_left5'] . "',
+            a9 = '" . $_POST['text_right5'] . "',
+            a10 = '" . $_POST['text_left6'] . "',
+            a11 = '" . $_POST['text_right6'] . "',
+            a12 = '" . $_POST['text_left7'] . "',
+            a13 = '" . $_POST['text_right7'] . "',
+            a14 = '" . $_POST['text_left8'] . "',
+            a15 = '" . $_POST['text_right8'] . "',
+            a16 = '" . $_POST['text_left9'] . "',
+            a17 = '" . $_POST['text_right9'] . "'
+
+            where id = '" . $_SESSION['num'] . "'
+            ";
+
+    $res = mysqli_query($conn, $sql);
+
+    //업데이트 완료 후 원래페이지로 이동
+    echo "
+    <script>
+    document.location.href = '/page/foolproof.html?num=" . $_SESSION['num'] . "';
+    alert('완료');
+    </script>
+    ";
+    ?>
+</body>
+
+</html>

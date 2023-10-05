@@ -1,0 +1,949 @@
+<!-- 
+프로젝트 : 사출기 통합 현황 풀프루프
+시작일자 : 2023-03-28
+제작자 : 임혜빈
+코멘트 : 
+-->
+
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+
+// 테마
+$sql00 = "select * from theme where id = '1'";
+$res00 = mysqli_query($conn, $sql00);
+$row00 = mysqli_fetch_array($res00);
+
+if ($row00['theme'] == null) {
+    $theme = 1;
+} else {
+    $theme = $row00['theme'];
+}
+
+
+//순서
+// 금형1
+// 금형2
+// 금형3
+// 냉IN
+// 냉OUT
+// 온IN
+// 온OUT
+// 호퍼
+
+$sql03 = "SELECT * FROM result1 ORDER BY id DESC limit 1";
+$res03 = mysqli_query($conn, $sql03);
+$row03 = mysqli_fetch_array($res03);
+
+$sql05 = "SELECT * FROM er1 WHERE id='" . (int)$row03['mc_num'] . "'";
+$res05 = mysqli_query($conn, $sql05);
+$row05 = mysqli_fetch_array($res05);
+
+//내용을 읽어올 파일명
+$fileName = "sort.txt";
+
+//파일이 존재하는지
+if (file_exists($fileName)) {
+    //파일 열기 
+    $fp = fopen($fileName, 'r');
+    if ($fp) {
+        //파일 읽기 
+        $fr = fread($fp, filesize($fileName));
+        if ($fr) {
+            //아이디가 같지 않으면
+            if ($row03['id'] != $fr) {
+                //데이터 베이스 정렬 시작
+                if ($row03['mc_num'] == '011' || $row03['mc_num'] == '012' || $row03['mc_num'] == '013' || $row03['mc_num'] == '014' || $row03['mc_num'] == '015') {
+                    //회전금형(11,12,13,14,15호기일 경우)
+
+                    //-1이면 편차치를 더하지 않음
+                    if ($row03['data1'] == '-1') {
+                        $add1 = 0;
+                    } else {
+                        $add1 = $row05['a0'];
+                    } //금형1
+                    if ($row03['data2'] == '-1') {
+                        $add2 = 0;
+                    } else {
+                        $add2 = $row05['a1'];
+                    } //금형2
+                    if ($row03['data3'] == '-1') {
+                        $add3 = 0;
+                    } else {
+                        $add3 = $row05['a2'];
+                    } //금형3
+                    if ($row03['data4'] == '-1') {
+                        $add4 = 0;
+                    } else {
+                        $add4 = $row05['a4'];
+                    } // 냉IN
+                    if ($row03['data5'] == '-1') {
+                        $add5 = 0;
+                    } else {
+                        $add5 = $row05['a5'];
+                    } // 냉OUT
+                    if ($row03['data6'] == '-1') {
+                        $add6 = 0;
+                    } else {
+                        $add6 = $row05['a6'];
+                    } // 온IN
+                    if ($row03['data8'] == '-1') {
+                        $add7 = 0;
+                    } else {
+                        $add7 = $row05['a7'];
+                    } // 온OUT
+                    if ($row03['data7'] == '-1') {
+                        $add8 = 0;
+                    } else {
+                        $add8 = $row05['a3'];
+                    } // 호퍼
+
+                    $sql04 = "INSERT into result2
+                    (
+                        date,
+                        time,
+                        program,
+                        lot_name,
+                        lot_num,
+                        mc_code,
+                        mc_num,
+                        contents,
+                        data1,
+                        data2,
+                        data3,
+                        data4,
+                        data5,
+                        data6,
+                        data7,
+                        data8,
+                        data9,
+                        data10,
+                        img_name,
+                        conclusion1,
+                        index1,
+                        ct1
+                    )
+                    values
+                    (
+                        '" . $row03['date'] . "',
+                        '" . $row03['time'] . "',
+                        '" . $row03['program'] . "',
+                        '" . $row03['lot_name'] . "',
+                        '" . $row03['lot_num'] . "',
+                        '" . $row03['mc_code'] . "',
+                        '" . $row03['mc_num'] . "',
+                        '" . $row03['contents'] . "',
+                        '" . ($row03['data1'] + $add1) . "',
+                        '" . ($row03['data2'] + $add2) . "',
+                        '" . ($row03['data3'] + $add3) . "',
+                        '" . ($row03['data4'] + $add4) . "',
+                        '" . ($row03['data5'] + $add5) . "',
+                        '" . ($row03['data6'] + $add6) . "',
+                        '" . ($row03['data8'] + $add7) . "',
+                        '" . ($row03['data7'] + $add8) . "',
+                        '" . $row03['data9'] . "',
+                        '" . $row03['data10'] . "',
+                        '" . $row03['img_name'] . "',
+                        '" . $row03['conclusion1'] . "',
+                        '" . $row03['index1'] . "',
+                        '" . $row03['ct1'] . "'
+                    )
+                    ";
+                    $res04 = mysqli_query($conn, $sql04);
+                } else {
+                    //-1이면 편차치를 더하지 않음
+                    if ($row03['data1'] == '-1') {
+                        $add1 = 0;
+                    } else {
+                        $add1 = $row05['a0'];
+                    } //금형1
+                    if ($row03['data2'] == '-1') {
+                        $add2 = 0;
+                    } else {
+                        $add2 = $row05['a1'];
+                    } //금형2
+                    if ($row03['data8'] == '-1') {
+                        $add3 = 0;
+                    } else {
+                        $add3 = $row05['a2'];
+                    } //금형3
+                    if ($row03['data3'] == '-1') {
+                        $add4 = 0;
+                    } else {
+                        $add4 = $row05['a4'];
+                    } // 냉IN
+                    if ($row03['data4'] == '-1') {
+                        $add5 = 0;
+                    } else {
+                        $add5 = $row05['a5'];
+                    } // 냉OUT
+                    if ($row03['data5'] == '-1') {
+                        $add6 = 0;
+                    } else {
+                        $add6 = $row05['a6'];
+                    } // 온IN
+                    if ($row03['data6'] == '-1') {
+                        $add7 = 0;
+                    } else {
+                        $add7 = $row05['a7'];
+                    } // 온OUT
+                    if ($row03['data7'] == '-1') {
+                        $add8 = 0;
+                    } else {
+                        $add8 = $row05['a3'];
+                    } // 호퍼
+
+                    //일반금형
+                    $sql04 = "INSERT into result2
+                    (
+                        date,
+                        time,
+                        program,
+                        lot_name,
+                        lot_num,
+                        mc_code,
+                        mc_num,
+                        contents,
+                        data1,
+                        data2,
+                        data3,
+                        data4,
+                        data5,
+                        data6,
+                        data7,
+                        data8,
+                        data9,
+                        data10,
+                        img_name,
+                        conclusion1,
+                        index1,
+                        ct1
+                    )
+                    values
+                    (
+                        '" . $row03['date'] . "',
+                        '" . $row03['time'] . "',
+                        '" . $row03['program'] . "',
+                        '" . $row03['lot_name'] . "',
+                        '" . $row03['lot_num'] . "',
+                        '" . $row03['mc_code'] . "',
+                        '" . $row03['mc_num'] . "',
+                        '" . $row03['contents'] . "',
+                        '" . ($row03['data1'] + $add1) . "',
+                        '" . ($row03['data2'] + $add2) . "',
+                        '" . ($row03['data8'] + $add3) . "',
+                        '" . ($row03['data3'] + $add4) . "',
+                        '" . ($row03['data4'] + $add5) . "',
+                        '" . ($row03['data5'] + $add6) . "',
+                        '" . ($row03['data6'] + $add7) . "',
+                        '" . ($row03['data7'] + $add8) . "',
+                        '" . $row03['data9'] . "',
+                        '" . $row03['data10'] . "',
+                        '" . $row03['img_name'] . "',
+                        '" . $row03['conclusion1'] . "',
+                        '" . $row03['index1'] . "',
+                        '" . $row03['ct1'] . "'
+                    )
+                    ";
+                    $res04 = mysqli_query($conn, $sql04);
+                }
+
+                //현재 아이디 저장
+                $fp = fopen($fileName, "w");
+                fwrite($fp, $row03['id']);
+            } else {
+                //echo "아이디 같음";
+            }
+            //파일 닫기
+            fclose($fp);
+        } else {
+            //echo "파일 읽기에 실패하였습니다.";
+        } //end if_fr
+    } else {
+        //echo "파일 열기에 실패하였습니다.";
+    } //end if_fp
+} else {
+    //echo "파일이 존재하지 않습니다.";
+} //end if_fe
+
+?>
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <META HTTP-EQUIV="refresh" CONTENT="3">
+    <title>EAST</title>
+    <link rel="stylesheet" href="/css/index<?php echo $theme; ?>.css">
+</head>
+
+<body>
+    <!-- 전체 판넬 -->
+    <div class="wrapper">
+
+        <!-- 상단바 -->
+        <div class="top_bar">
+            <div class="logo">
+                <a class='logo_item' href="/index.html">EAST</a>
+            </div>
+            <div class="menu">
+                <a class='menu_item active' href="/index.html">메인 화면</a>
+                <a class='menu_item' href="/page/set1.html">최소 최대</a>
+                <a class='menu_item' href="/page/set2.html">분해능 설정</a>
+                <a class='menu_item' href="/page/set4.html">적정 온도</a>
+                <a class='menu_item' href="/page/set3.html">센서 편차</a>
+                <!-- <a class='menu_item' href="/page/theme.html">테마 설정</a> -->
+            </div>
+        </div>
+        <!-- /상단바 -->
+
+        <!-- 메인 판넬 -->
+        <div class="main_panel">
+            <!-- 메인 콘텐츠 -->
+            <div class="main_content">
+                <!-- 상단 파란선 -->
+                <div class="line"></div>
+                <table>
+                    <tr>
+                        <th>날짜</th>
+                        <th>마지막 검사시간</th>
+                        <th>작동여부</th>
+                        <th>검사상태</th>
+                        <th>호기</th>
+                        <th>고정금형</th>
+                        <th>이동금형</th>
+                        <th>회전금형</th>
+                        <th>호퍼드라이건조</th>
+                        <th>냉각수IN</th>
+                        <th>냉각수OUT</th>
+                        <th>온수기IN</th>
+                        <th>온수기OUT</th>
+                        <th>작동유</th>
+                    </tr>
+                    <?php
+                    for ($count = 1; $count <= 19; $count++) {
+                        //가장 최근 검사값
+                        $sql = "select * from result1 where mc_num='" . sprintf('%03d', $count) . "'  order by id desc limit 1";
+                        $res = mysqli_query($conn, $sql);
+                        $row = mysqli_fetch_array($res);
+
+                        //분해능
+                        $sql01 = "select * from cr1 where id='" . $count . "'";
+                        $res01 = mysqli_query($conn, $sql01);
+                        $row01 = mysqli_fetch_array($res01);
+
+
+                        //최소값 최대값
+                        $sql02 = "select * from dr1 where id='" . $count . "'";
+                        $res02 = mysqli_query($conn, $sql02);
+                        $row02 = mysqli_fetch_array($res02);
+
+
+                        //편차
+                        $sql08 = "select * from er1 where id='" . $count . "'";
+                        $res08 = mysqli_query($conn, $sql08);
+                        $row08 = mysqli_fetch_array($res08);
+
+                        $division1 = $row01['a0'];
+                        $division2 = $row01['a1'];
+                        $division3 = $row01['a2'];
+                        $division4 = $row01['a3'];
+                        $division5 = $row01['a4'];
+                        $division6 = $row01['a5'];
+                        $division7 = $row01['a6'];
+                        $division8 = $row01['a7'];
+                        $division9 = $row01['a8'];
+
+                        $diff_value1 = $row08['a0'];
+                        $diff_value2 = $row08['a1'];
+                        $diff_value3 = $row08['a2'];
+                        $diff_value4 = $row08['a3'];
+                        $diff_value5 = $row08['a4'];
+                        $diff_value6 = $row08['a5'];
+                        $diff_value7 = $row08['a6'];
+                        $diff_value8 = $row08['a7'];
+                        $diff_value9 = $row08['a8'];
+
+                        $min1 = $row02['a0'];
+                        $min2 = $row02['a2'];
+                        $min3 = $row02['a4'];
+                        $min4 = $row02['a6'];
+                        $min5 = $row02['a8'];
+                        $min6 = $row02['a10'];
+                        $min7 = $row02['a12'];
+                        $min8 = $row02['a14'];
+                        $min9 = $row02['a16'];
+
+                        $max1 = $row02['a1'];
+                        $max2 = $row02['a3'];
+                        $max3 = $row02['a5'];
+                        $max4 = $row02['a7'];
+                        $max5 = $row02['a9'];
+                        $max6 = $row02['a11'];
+                        $max7 = $row02['a13'];
+                        $max8 = $row02['a15'];
+                        $max9 = $row02['a17'];
+
+                        //회전금형호기
+                        if ($count == '11' || $count == '12' || $count == '13' || $count == '14' || $count == '15') {
+                            $data1 = $row['data1']; //고정
+                            $data2 = $row['data2']; //이동
+                            $data3 = $row['data3']; //회전
+                            $data4 = $row['data7']; //호퍼
+                            $data5 = $row['data4']; //냉인
+                            $data6 = $row['data5']; //냉아
+                            $data7 = $row['data6']; //온인
+                            $data8 = ""; //온아
+                            $data9 = $row['data8']; //작동
+
+                            $result001 = number_format((($data1 / $division1) + $diff_value1), 2);
+                            $result002 = number_format((($data2 / $division2) + $diff_value2), 2);
+                            $result003 = number_format((($data3 / $division3) + $diff_value3), 2);
+                            $result004 = number_format((($data4 / $division4) + $diff_value4), 2);
+                            $result005 = number_format((($data5 / $division5) + $diff_value5), 2);
+                            $result006 = number_format((($data6 / $division6) + $diff_value6), 2);
+                            $result007 = number_format((($data7 / $division7) + $diff_value7), 2);
+                            $result008 = number_format((($data7 / $division8) + $diff_value8), 2); //온아
+                            $result009 = number_format((($data9 / $division9) + $diff_value9), 2);
+
+
+                            if ($data1 == null || $data1 == '-1' || $data1 == "") {
+                                $result001 = "ㅡ";
+                            }
+                            if ($data2 == null || $data2 == '-1' || $data2 == "") {
+                                $result002 = "ㅡ";
+                            }
+                            if ($data3 == null || $data3 == '-1' || $data3 == "") {
+                                $result003 = "ㅡ";
+                            }
+                            if ($data4 == null || $data4 == '-1' || $data4 == "") {
+                                $result004 = "ㅡ";
+                            }
+                            if ($data5 == null || $data5 == '-1' || $data5 == "") {
+                                $result005 = "ㅡ";
+                            }
+                            if ($data6 == null || $data6 == '-1' || $data6 == "") {
+                                $result006 = "ㅡ";
+                            }
+                            if ($data7 == null || $data7 == '-1' || $data7 == "") {
+                                $result007 = "ㅡ";
+                            }
+                            if ($data7 == null || $data7 == '-1' || $data7 == "") {
+                                $result008 = "ㅡ";
+                            }
+                            if ($data9 == null || $data9 == '-1' || $data9 == "") {
+                                $result009 = "ㅡ";
+                            }
+
+
+
+                            echo "
+                        <tr>
+                        <td><div>" . $row['date'] . "</div></td>
+                        <td><div>" . $row['time'] . "</div></td>
+                        <td><div id='time_status'><div class='time_all' id='time_all" . $count . "'></div></div></td>
+                        <td><div id='color_status'><div class='status_all' id='status_all" . $count . "'></div></div></td>
+                        <td><div>" . $count . "</div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_1'></div><div class='value'>" . $result001 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_2'></div><div class='value'>" . $result002 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_3'></div><div class='value'>" . $result003 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_4'></div><div class='value'>" . $result004 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_5'></div><div class='value'>" . $result005 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_6'></div><div class='value'>" . $result006 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_7'></div><div class='value'>" . $result007 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_8'></div><div class='value'>" . $result008 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_9'></div><div class='value'>" . $result009 . "</div></div></td>
+                        </tr>
+                        ";
+                        } else {
+                            $data1 = $row['data1']; //고정
+                            $data2 = $row['data2']; //이동
+                            $data3 = ""; //회전
+                            $data4 = $row['data7']; //호퍼
+                            $data5 = $row['data3']; //냉인
+                            $data6 = $row['data4']; //냉아
+                            $data7 = $row['data5']; //온인
+                            $data8 = $row['data6']; //온아
+                            $data9 = $row['data8']; //작동유
+
+                            $result001 = number_format((($data1 / $division1) + $diff_value1), 2);
+                            $result002 = number_format((($data2 / $division2) + $diff_value2), 2);
+                            $result003 = "ㅡ"; //회전
+                            $result004 = number_format((($data4 / $division4) + $diff_value4), 2);
+                            $result005 = number_format((($data5 / $division5) + $diff_value5), 2);
+                            $result006 = number_format((($data6 / $division6) + $diff_value6), 2);
+                            $result007 = number_format((($data7 / $division7) + $diff_value7), 2);
+                            $result008 = number_format((($data8 / $division8) + $diff_value8), 2);
+                            $result009 = number_format((($data9 / $division9) + $diff_value9), 2);
+
+                            if ($data1 == null || $data1 == '-1' || $data1 == "") {
+                                $result001 = "ㅡ";
+                            }
+                            if ($data2 == null || $data2 == '-1' || $data2 == "") {
+                                $result002 = "ㅡ";
+                            }
+                            if ($data3 == null || $data3 == '-1' || $data3 == "") {
+                                $result003 = "ㅡ";
+                            }
+                            if ($data4 == null || $data4 == '-1' || $data4 == "") {
+                                $result004 = "ㅡ";
+                            }
+                            if ($data5 == null || $data5 == '-1' || $data5 == "") {
+                                $result005 = "ㅡ";
+                            }
+                            if ($data6 == null || $data6 == '-1' || $data6 == "") {
+                                $result006 = "ㅡ";
+                            }
+                            if ($data7 == null || $data7 == '-1' || $data7 == "") {
+                                $result007 = "ㅡ";
+                            }
+                            if ($data8 == null || $data8 == '-1' || $data8 == "") {
+                                $result008 = "ㅡ";
+                            }
+                            if ($data9 == null || $data9 == '-1' || $data9 == "") {
+                                $result009 = "ㅡ";
+                            }
+
+
+
+
+                            echo "
+                        <tr>
+                        <td><div>" . $row['date'] . "</div></td>
+                        <td><div>" . $row['time'] . "</div></td>
+                        <td><div id='time_status'><div class='time_all' id='time_all" . $count . "'></div></div></td>
+                        <td><div id='color_status'><div class='status_all' id='status_all" . $count . "'></div></div></td>
+                        <td><div>" . $count . "</div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_1'></div><div class='value'>" . $result001 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_2'></div><div class='value'>" . $result002 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_3'></div><div class='value'>" . $result003 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_4'></div><div class='value'>" . $result004 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_5'></div><div class='value'>" . $result005 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_6'></div><div class='value'>" . $result006 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_7'></div><div class='value'>" . $result007 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_8'></div><div class='value'>" . $result008 . "</div></div></td>
+                        <td><div class='td_value'><div class='status' id='" . $count . "_9'></div><div class='value'>" . $result009 . "</div></div></td>
+                        </tr>
+                        ";
+                        }
+
+                        //최소
+                        if ($result001 < $min1) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_1').style.backgroundColor = '#3867D6';
+                                // 파란색
+                                </script>
+                                ";
+                        }
+                        //적정
+                        else if ($result001 >= $min1 && $result001 <= $max1) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_1').style.backgroundColor = '#20BF6B';
+                                // 초록색
+                                </script>
+                                ";
+                        }
+                        //최대
+                        else if ($result001 > $max1) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_1').style.backgroundColor = '#F03434';
+                                // 빨간색
+                                </script>
+                                ";
+                        }
+                        //에러
+                        else {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_1').style.backgroundColor = '#29363d';
+                                //회색
+                                </script>
+                                ";
+                        }
+
+                        //최소
+                        if ($result002 < $min2) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_2').style.backgroundColor = '#3867D6';
+                                </script>
+                                ";
+                        }
+                        //적정
+                        else if ($result002 >= $min2 && $result002 <= $max2) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_2').style.backgroundColor = '#20BF6B';
+                                </script>
+                                ";
+                        }
+                        //최대
+                        else if ($result002 > $max2) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_2').style.backgroundColor = '#F03434';
+                                </script>
+                                ";
+                        }
+                        //에러
+                        else {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_2').style.backgroundColor = '#29363d';
+                                </script>
+                                ";
+                        }
+
+                        //최소
+                        if ($result003 < $min3) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_3').style.backgroundColor = '#3867D6';
+                                </script>
+                                ";
+                        }
+                        //적정
+                        else if ($result003 >= $min3 && $result003 <= $max3) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_3').style.backgroundColor = '#20BF6B';
+                                </script>
+                                ";
+                        }
+                        //최대
+                        else if ($result003 > $max3) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_3').style.backgroundColor = '#F03434';
+                                </script>
+                                ";
+                        }
+                        //에러
+                        else {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_3').style.backgroundColor = '#29363d';
+                                </script>
+                                ";
+                        }
+
+                        //최소
+                        if ($result004 < $min4) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_4').style.backgroundColor = '#3867D6';
+                                </script>
+                                ";
+                        }
+                        //적정
+                        else if ($result004 >= $min4 && $result004 <= $max4) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_4').style.backgroundColor = '#20BF6B';
+                                </script>
+                                ";
+                        }
+                        //최대
+                        else if ($result004 > $max4) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_4').style.backgroundColor = '#F03434';
+                                </script>
+                                ";
+                        }
+                        //에러
+                        else {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_4').style.backgroundColor = '#29363d';
+                                </script>
+                                ";
+                        }
+
+                        //최소
+                        if ($result005 < $min5) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_5').style.backgroundColor = '#3867D6';
+                                </script>
+                                ";
+                        }
+                        //적정
+                        else if ($result005 >= $min5 && $result005 <= $max5) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_5').style.backgroundColor = '#20BF6B';
+                                </script>
+                                ";
+                        }
+                        //최대
+                        else if ($result005 > $max5) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_5').style.backgroundColor = '#F03434';
+                                </script>
+                                ";
+                        }
+                        //에러
+                        else {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_5').style.backgroundColor = '#29363d';
+                                </script>
+                                ";
+                        }
+
+                        //최소
+                        if ($result006 < $min6) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_6').style.backgroundColor = '#3867D6';
+                                </script>
+                                ";
+                        }
+                        //적정
+                        else if ($result006 >= $min6 && $result006 <= $max6) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_6').style.backgroundColor = '#20BF6B';
+                                </script>
+                                ";
+                        }
+                        //최대
+                        else if ($result006 > $max6) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_6').style.backgroundColor = '#F03434';
+                                </script>
+                                ";
+                        }
+                        //에러
+                        else {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_6').style.backgroundColor = '#29363d';
+                                </script>
+                                ";
+                        }
+
+                        //최소
+                        if ($result007 < $min7) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_7').style.backgroundColor = '#3867D6';
+                                </script>
+                                ";
+                        }
+                        //적정
+                        else if ($result007 >= $min7 && $result007 <= $max7) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_7').style.backgroundColor = '#20BF6B';
+                                </script>
+                                ";
+                        }
+                        //최대
+                        else if ($result007 > $max7) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_7').style.backgroundColor = '#F03434';
+                                </script>
+                                ";
+                        }
+                        //에러
+                        else {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_7').style.backgroundColor = '#29363d';
+                                </script>
+                                ";
+                        }
+
+                        //최소
+                        if ($result008 < $min8) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_8').style.backgroundColor = '#3867D6';
+                                </script>
+                                ";
+                        }
+                        //적정
+                        else if ($result008 >= $min8 && $result008 <= $max8) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_8').style.backgroundColor = '#20BF6B';
+                                </script>
+                                ";
+                        }
+                        //최대
+                        else if ($result008 > $max8) {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_8').style.backgroundColor = '#F03434';
+                                </script>
+                                ";
+                        }
+                        //에러
+                        else {
+                            echo "
+                                <script>
+                                document.getElementById('" . $count . "_8').style.backgroundColor = '#29363d';
+                                </script>
+                                ";
+                        }
+
+                        //최소
+                        if ($result009 < $min9) {
+                            echo "
+                                                        <script>
+                                                        document.getElementById('" . $count . "_9').style.backgroundColor = '#3867D6';
+                                                        </script>
+                                                        ";
+                        }
+                        //적정
+                        else if ($result009 >= $min9 && $result009 <= $max9) {
+                            echo "
+                                                        <script>
+                                                        document.getElementById('" . $count . "_9').style.backgroundColor = '#20BF6B';
+                                                        </script>
+                                                        ";
+                        }
+                        //최대
+                        else if ($result009 > $max9) {
+                            echo "
+                                                        <script>
+                                                        document.getElementById('" . $count . "_9').style.backgroundColor = '#F03434';
+                                                        </script>
+                                                        ";
+                        }
+                        //에러
+                        else {
+                            echo "
+                                                        <script>
+                                                        document.getElementById('" . $count . "_9').style.backgroundColor = '#29363d';
+                                                        </script>
+                                                        ";
+                        }
+
+                        $sql02 = "select * from dr1 where id='" . $count . "'";
+                        $res02 = mysqli_query($conn, $sql02);
+                        $row02 = mysqli_fetch_array($res02);
+
+
+                        //전체 상태 표기
+                        //미사용 -- 회색
+                        if ($row02['index1'] == '1') {
+                            echo "
+                                <script>
+                                document.getElementById('status_all" . $count . "').style.backgroundColor = '#29363d';
+                                document.getElementById('" . $count . "_1').style.backgroundColor = '#29363d';
+                                document.getElementById('" . $count . "_2').style.backgroundColor = '#29363d';
+                                document.getElementById('" . $count . "_3').style.backgroundColor = '#29363d';
+                                document.getElementById('" . $count . "_4').style.backgroundColor = '#29363d';
+                                document.getElementById('" . $count . "_5').style.backgroundColor = '#29363d';
+                                document.getElementById('" . $count . "_6').style.backgroundColor = '#29363d';
+                                document.getElementById('" . $count . "_7').style.backgroundColor = '#29363d';
+                                document.getElementById('" . $count . "_8').style.backgroundColor = '#29363d';
+                                document.getElementById('" . $count . "_9').style.backgroundColor = '#29363d';
+                                </script>
+                                ";
+                        }
+                        //높음 -- 빨간색으로
+                        else if (
+                            (number_format(($data1 / $division1), 2) > $max1) ||
+                            (number_format(($data2 / $division2), 2) > $max2) ||
+                            (number_format(($data3 / $division3), 2) > $max3) ||
+                            (number_format(($data4 / $division4), 2) > $max4) ||
+                            (number_format(($data5 / $division5), 2) > $max5) ||
+                            (number_format(($data6 / $division6), 2) > $max6) ||
+                            (number_format(($data7 / $division7), 2) > $max7) ||
+                            (number_format(($data8 / $division8), 2) > $max8) ||
+                            (number_format(($data9 / $division9), 2) > $max9)
+                        ) {
+                            echo "
+                                <script>
+                                document.getElementById('status_all" . $count . "').style.backgroundColor = '#F03434';
+                                </script>
+                                ";
+                        }
+                        //낮음 -- 빨간색으로
+                        else if (
+                            (number_format(($data1 / $division1), 2) < $min1) ||
+                            (number_format(($data2 / $division2), 2) < $min2) ||
+                            (number_format(($data3 / $division3), 2) < $min3) ||
+                            (number_format(($data4 / $division4), 2) < $min4) ||
+                            (number_format(($data5 / $division5), 2) < $min5) ||
+                            (number_format(($data6 / $division6), 2) < $min6) ||
+                            (number_format(($data7 / $division7), 2) < $min7) ||
+                            (number_format(($data8 / $division8), 2) < $min8) ||
+                            (number_format(($data9 / $division9), 2) < $min9)
+                        ) {
+                            echo "
+                                <script>
+                                document.getElementById('status_all" . $count . "').style.backgroundColor = '#F03434';
+                                </script>
+                                ";
+                        }
+                        //정상 -- 녹색
+                        else {
+                            echo "
+                                <script>
+                                document.getElementById('status_all" . $count . "').style.backgroundColor = '#20BF68';
+                                </script>
+                                ";
+                        }
+                        //echo "현재시간";
+                        $now = strtotime(date('H:i:s'));
+                        //echo "<br>";
+                        //echo "저장시간";
+                        $res_time = strtotime($row['time']);
+                        //echo "<br>";
+                        //echo "차이시간";
+                        $diff = $now - $res_time;
+                        //echo "<br>";
+
+
+                        if (date('Y-m-d') == $row['date']) {
+                            //시간상태표시
+                            if ($diff > 300) {
+                                echo "
+		                                <script>
+		                                document.getElementById('time_all" . $count . "').style.backgroundColor = '#F6BB42';
+		                                </script>
+	            	                    ";
+                            }
+                            //정상 -- 녹색
+                            else {
+                                echo "
+		                                <script>
+		                                document.getElementById('time_all" . $count . "').style.backgroundColor = '#20BF68';
+		                                </script>
+		                                ";
+                            }
+                        } else {
+                            //시간상태표시
+                            echo "
+		                                <script>
+		                                document.getElementById('time_all" . $count . "').style.backgroundColor = '#F03434';
+		                                // 빨간색
+                                        </script>
+	            	                    ";
+                        }
+                    }
+                    ?>
+                </table>
+            </div>
+            <!-- /메인 콘텐츠 -->
+        </div>
+        <!-- /메인 판넬 -->
+
+    </div>
+    <!-- /전체 판넬 -->
+</body>
+
+</html>

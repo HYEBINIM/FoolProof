@@ -1,0 +1,253 @@
+:root{
+    --primary-color : #cbe86b;
+    --background-color : #1c140d;
+    --panel-color : #1c140d;
+    --text-color : #f2e9e1;
+    --table-border-color : #f2e9e14f;
+    --disable-color : #536c79;
+    --icon-color : #a2b8ec;
+    --red-color : #F03434;
+    --green-color : #20BF6B;
+    --yellow-color : #F6BB42;
+}
+
+@font-face {
+    font-family: 'SCDream1';
+    src: url("/font/SCDream1.otf");
+}
+@font-face {
+    font-family: 'SCDream2';
+    src: url("/font/SCDream2.otf");
+}
+@font-face {
+    font-family: 'SCDream3';
+    src: url("/font/SCDream3.otf");
+}
+@font-face {
+    font-family: 'SCDream4';
+    src: url("/font/SCDream4.otf");
+}
+@font-face {
+    font-family: 'SCDream5';
+    src: url("/font/SCDream5.otf");
+}
+@font-face {
+    font-family: 'SCDream6';
+    src: url("/font/SCDream6.otf");
+}
+@font-face {
+    font-family: 'SCDream7';
+    src: url("/font/SCDream7.otf");
+}
+
+*{
+    padding: 0;
+    margin: 0;
+    box-sizing: border-box;
+    font-family: SCDream4;
+}
+
+body, html{
+    width: 100%;
+    height: 100%;
+}
+
+a{
+    text-decoration: none;
+    cursor: pointer;
+}
+
+table{
+    border-collapse: collapse;
+    color: var(--text-color);
+}
+
+
+/* 메인 판넬 */
+.wrapper{
+    width: 100%;
+    height: 100%;
+    background: var(--panel-color);
+}
+
+/* 상단바 */
+.top_bar{
+    width: 100%;
+    height: 60px;
+    background: var(--background-color);
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+}
+
+/* 로고 인덱스 */
+.logo{
+min-width: 200px;
+}
+
+.logo_item{
+    font-family: SCDream7;
+    margin-left: 18px;
+    font-size: 1.8rem;
+    line-height: 60px;
+    color: var(--primary-color);
+}
+
+.menu{
+    display: flex;
+    justify-content: end;
+    align-items: center;
+    min-width: 600px;
+    margin-right: 8px; /*왼쪽 마진이 18이나 menu_item 양옆마진을 10 줬으므로 오른쪽 마진은 8만 줌 */
+}
+
+.menu_item{
+    width: 100px;
+    height: 40px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 0.875rem;
+    font-weight: 700;
+    color: var(--text-color);
+    border: var(--primary-color) 1px solid;
+    border-radius: 6px;
+    margin: 0px 10px;
+}
+
+.active{
+    width: 100px;
+    height: 40px;
+    background: var(--primary-color);
+    color: var(--background-color);
+    border-radius: 6px;
+    border: var(--primary-color) 1px solid;
+    line-height: 60px;
+    background-color: var(--primary-color);
+}
+
+
+/* 메인 판넬 */
+.main_panel{
+    width: 100%;
+    height: calc(100% - 60px);
+    background: var(--panel-color);
+    display: flex; /* 메인 콘텐츠를 중앙에 위치시킴 */
+    align-items: center;
+    justify-content: center;
+}
+
+/* 메인 콘텐츠 */
+.main_content{
+    position: relative;
+    width: calc(100% - 40px); /* 좌우 마진값 빼줌*/
+    height: calc(100% - 40px - 1px); /* 상하 마진값과 파란선 높이만큼 빼줌 */
+    background: var(--background-color);
+}
+
+.main_content form{
+    width: 100%;
+    height: 100%;
+}
+
+/* 파란선 */
+.main_content .line{
+    width: 100%;
+    height: 1px;
+    background-color: var(--primary-color);
+}
+
+.main_content .box_title{
+    width: 100%;
+    height: 7vh;
+    display: flex;
+    flex-direction: row;
+    justify-content: space-between;
+    align-items: center;
+    }
+
+/* 제목 */
+.main_content .title{
+font-size: 1.4rem;
+font-weight: 600;
+color: var(--primary-color);
+margin: 16px 0px;
+margin-left: 18px;
+}
+
+/* 설정====================== */
+
+.btn_set_save{
+    font-size: 1rem;
+    background: var(--primary-color);
+    color: var(--background-color);
+    width: 100px;
+    height: 60%;
+    border: none;
+    border-radius: 6px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-right: 20px;
+}
+
+.box_set{
+    width: 100%;
+    height: calc(100% - 9vh);
+    display: flex;
+    flex-direction: row;
+}
+
+.box_set table{
+    width: 100%;
+    height: 100%;
+    margin: 0px 18px;
+    font-size: 0.875rem;
+    table-layout: fixed;
+}
+
+.box_set table th{
+    height: 40px;
+    border-top: 1px solid var(--table-border-color);
+    border-bottom: 1px solid var(--table-border-color);
+    color: var(--text-color);
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.box_set table td{
+    border-top: 1px solid var(--table-border-color);
+    border-bottom: 1px solid var(--table-border-color);
+    text-align: center;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.box_set table td input{
+    width: 90%;
+    height: 80%;
+    border: var(--table-border-color) 1px solid;
+    border-radius: 6px;
+    /* 선택옵션 */
+    background-color: var(--table-border-color);
+}
+
+.btn_set{
+    background: var(--primary-color);
+    border-radius: 6px;
+    width: 20%;
+    height: 10%;
+    margin: 3px;
+}
+
+.btn_text_set{
+    color: var(--background-color);
+    width: 100%;
+    height: 100%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.5rem;
+}

@@ -1,0 +1,106 @@
+<!-- 
+프로젝트 : 사출기 통합 현황 풀프루프
+시작일자 : 2023-03-28
+제작자 : 임혜빈
+코멘트 : 
+-->
+
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+
+//테마
+$sql00 = "select * from theme where id = '1'";
+$res00 = mysqli_query($conn, $sql00);
+$row00 = mysqli_fetch_array($res00);
+?>
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAST</title>
+    <link rel="stylesheet" href="/css/theme<?php echo $theme; ?>.css">
+</head>
+
+<body>
+    <!-- 전체 판넬 -->
+    <div class="wrapper">
+
+        <!-- 상단바 -->
+        <div class="top_bar">
+            <div class="logo">
+                <a class='logo_item' href="/index.html">EAST</a>
+            </div>
+            <div class="menu">
+                <a class='menu_item' href="/index.html">메인 화면</a>
+                <a class='menu_item' href="/page/set1.html">최소 최대</a>
+                <a class='menu_item' href="/page/set2.html">분해능 설정</a>
+                <a class='menu_item' href="/page/set4.html">적정 온도</a>
+                <a class='menu_item' href="/page/set3.html">센서 편차</a>
+                <a class='menu_item active' href="/page/theme.html">테마 설정</a>
+            </div>
+        </div>
+        <!-- /상단바 -->
+
+        <!-- 메인 판넬 -->
+        <div class="main_panel">
+            <!-- 메인 콘텐츠 -->
+            <div class="main_content">
+                <!-- 상단 파란선 -->
+                <div class="line"></div>
+                <p class="title">테마 설정</p>
+                <!-- 테마변경 페이지 -->
+                <div class="change_theme">
+                    <div class="box_change_theme">
+                        <table>
+
+                        </table>
+                        <form method='post' action="/action/theme_change.php">
+                            <?php
+                            for ($count = 1; $count <= 2; $count++) {
+                                //설정된 테마 색상 보여주기
+                                if ($count == '1') {
+                                    $color1 = "style='background : #f4f4f4';";
+                                    $color2 = "style='background : #31456A';";
+                                } else if ($count == '2') {
+                                    $color1 = "style='background : black';";
+                                    $color2 = "style='background : #cdb994';";
+                                }
+                                // else if ($count == '3') {
+                                //     $color1 = "style='background : #fec8c9';";
+                                //     $color2 = "style='background : #f0f5f9';";
+                                // } else if ($count == '4') {
+                                //     $color1 = "style='background : #7f9eb2';";
+                                //     $color2 = "style='background : #274c5e';";
+                                // } else if ($count == '5') {
+                                //     $color1 = "style='background : #77AF9C';";
+                                //     $color2 = "style='background : #285943';";
+                                // }
+
+                                echo "
+                                <button type='submit' class='btn_theme_change' name='theme' value='" . $count . "'>
+                                테마" . $count . "
+                                <div class='color'>
+                                <div class='color_item' " . $color1 . "_" . $count . "></div>
+                                <div class='color_item' " . $color2 . "_" . $count . "></div>
+                                </div>
+                                </button>";
+                            }
+                            ?>
+                        </form>
+                    </div>
+                </div>
+                <!-- /테마변경 페이지 -->
+            </div>
+            <!-- /메인 콘텐츠 -->
+        </div>
+        <!-- /메인 판넬 -->
+
+    </div>
+    <!-- /전체 판넬 -->
+</body>
+
+</html>

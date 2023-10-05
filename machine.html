@@ -1,0 +1,99 @@
+<!-- 
+프로젝트 : 사출기 통합 현황 풀프루프
+시작일자 : 2023-03-28
+제작자 : 임혜빈
+코멘트 : 
+-->
+
+<?php
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+    <link rel="stylesheet" href="/css/index.css">
+</head>
+
+<body>
+    <!-- 전체 판넬 -->
+    <div class="wrapper">
+
+        <!-- 상단바 -->
+        <div class="top_bar">
+            <a href="/index.html">EAST</a>
+        </div>
+        <!-- /상단바 -->
+
+        <!-- 메인 판넬 -->
+        <div class="main_panel">
+            <!-- 메인 콘텐츠 -->
+            <div class="main_content">
+                <!-- 상단 파란선 -->
+                <div class="line"></div>
+                <p class="title">FOOL PROOF</p>
+                <table>
+                    <tr>
+                        <th>상태</th>
+                        <th>호기</th>
+                        <th>고정금형</th>
+                        <th>이동금형</th>
+                        <th>냉각수IN</th>
+                        <th>냉각수OUT</th>
+                        <th>온수기IN</th>
+                        <th>온수기OUT</th>
+                        <th>호퍼드라이건조</th>
+                        <th>건조기IN</th>
+                        <th>reservedOUT</th>
+                        <th>배럴온도(노즐)</th>
+                        <th>배럴온도(H1)</th>
+                        <th>배럴온도(H2)</th>
+                        <th>배럴온도(H3)</th>
+                        <th>배럴온도(H4)</th>
+                        <th>작동유온도</th>
+                        <th>관리</th>
+                    </tr>
+                    <?php
+                        $sql = "select * from result1 group by machine_num order by id desc";
+                        $res = mysqli_query($conn, $sql);
+                        for($count = 1; $count <= 20; $count++){
+                            $row = mysqli_fetch_array($res);
+                            echo "
+                            <tr>
+                            <td><div class='td_value'><div class='status_all'></div></div></td>
+                            <td><div class='td_value'>".$count."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data1']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data2']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data3']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data4']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data5']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data6']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data7']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data8']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data9']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data10']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data11']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data12']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data13']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data14']."</div></td>
+                            <td><div class='td_value'><div class='status'></div>".$row['data15']."</div></td>
+                            <td><div class='td_value'><a href='/page/time.html' class='btn_link'>자세히</a></div></td>
+                            </tr>
+                            ";
+                        }
+                        ?>
+                </table>
+            </div>
+            <!-- /메인 콘텐츠 -->
+        </div>
+        <!-- /메인 판넬 -->
+
+    </div>
+    <!-- /전체 판넬 -->
+</body>
+
+</html>

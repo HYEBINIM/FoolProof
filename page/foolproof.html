@@ -1,0 +1,840 @@
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+?>
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>P/F SYSTEM</title>
+    <link rel="stylesheet" href="/css/foolproof.css">
+</head>
+
+<body>
+    <form method='post' action="/action/foolproof.html">
+        <?php
+        if ($_GET['num'] == null) {
+            $num = 0;
+        } else {
+            $num = $_GET['num'];
+        }
+
+        $menu1 = $num;
+        $menu2 = "고정금형";
+        $menu3 = "이동금형";
+        $menu4 = "회전금형";
+        $menu5 = "호퍼드라이";
+        $menu6 = "냉각수IN";
+        $menu7 = "냉각수OUT";
+        $menu8 = "온수기IN";
+        $menu9 = "온수기OUT";
+        $menu10 = "작동유";
+
+        //가장 최근 검사
+        $sql01 = "select * from result1 where mc_num = '" . sprintf('%03d', $menu1) . "' order by id desc limit 1";
+        $res01 = mysqli_query($conn, $sql01);
+        $row01 = mysqli_fetch_array($res01);
+
+        //두번째 최근 검사 구하기 위해 (CT)
+        $sql02 = "select * from result1 where date ='" . date('Y-m-d') . "' and mc_num = '" . sprintf('%03d', $menu1) . "' order by id desc limit 2,2";
+        $res02 = mysqli_query($conn, $sql02);
+        $row02 = mysqli_fetch_array($res02);
+
+        //분해능
+        $sql03 = "select * from cr1 where id='" . $menu1 . "'";
+        $res03 = mysqli_query($conn, $sql03);
+        $row03 = mysqli_fetch_array($res03);
+
+        //최대최소
+        $sql04 = "select * from dr1 where id='" . $menu1 . "'";
+        $res04 = mysqli_query($conn, $sql04);
+        $row04 = mysqli_fetch_array($res04);
+
+
+        //편차
+        $sql05 = "select * from er1 where id='" . $menu1 . "'";
+        $res05 = mysqli_query($conn, $sql05);
+        $row05 = mysqli_fetch_array($res05);
+
+        //적정온도
+        $sql06 = "select * from dr2 where id='" . $menu1 . "'";
+        $res06 = mysqli_query($conn, $sql06);
+        $row06 = mysqli_fetch_array($res06);
+
+        ///////////////////////////화면에 표시
+        //현재 날짜
+        $top_date = date('Y-m-d');
+
+        //생산 수량
+        if ($row01['data9'] == null) {
+            $top_count = 0;
+        } else {
+            $top_count = $row01['data9'];
+        }
+
+        //CT
+        $time1 = $row01['time'];
+        $time2 = $row02['time'];
+        $ct = strtotime($time1) - strtotime($time2);
+
+        if ($ct > 86400) {
+            $top_ct = "-";
+        } else {
+            $top_ct = $ct;
+        }
+
+        //최근 검사 날짜
+        if ($row01['date'] == null) {
+            $ins_date = "없음";
+        } else {
+            $ins_date = $row01['date'];
+        }
+
+        //최근 검사 시간
+        if ($row01['time'] == null) {
+            $ins_time = "없음";
+        } else {
+            $ins_time = $row01['time'];
+        }
+
+        //회전금형 설비인 경우
+        if ($_GET['num'] == "11" || $_GET['num'] == "12" || $_GET['num'] == "13" || $_GET['num'] == "14" || $_GET['num'] == "15") {
+            //고정금형
+            $data1 = $row01['data1'];
+            //이동금형
+            $data2 = $row01['data2'];
+            //회전금형
+            $data3 = $row01['data3'];
+            //호퍼
+            $data4 = $row01['data7'];
+            //냉각수IN
+            $data5 = $row01['data4'];
+            //냉각수OUT
+            $data6 = $row01['data5'];
+            //온수기IN
+            $data7 = $row01['data6'];
+            //온수기OUT
+            $data8 = $row01['data6'];
+            //작동유
+            $data9 = $row01['data8'];
+        }
+        //회전금형 설비가 아닌 경우
+        else {
+            //고정금형
+            $data1 = $row01['data1'];
+            //이동금형
+            $data2 = $row01['data2'];
+            //회전금형
+            $data3 = -1;
+            //호퍼
+            $data4 = $row01['data7'];
+            //냉각수IN
+            $data5 = $row01['data3'];
+            //냉각수OUT
+            $data6 = $row01['data4'];
+            //온수기IN
+            $data7 = $row01['data5'];
+            //온수기OUT
+            $data8 = $row01['data6'];
+            //작동유
+            $data9 = $row01['data8'];
+        }
+
+        /////////////////////////////////////////
+
+        //분해능이 0일경우 (오토셋 에러 방지)
+        if ($row03['a0'] == 0 || $row03['a0'] == null) {
+            $division1 = 1;
+        } else {
+            $division1 = $row03['a0'];
+        }
+        if ($row03['a1'] == 0 || $row03['a1'] == null) {
+            $division2 = 1;
+        } else {
+            $division2 = $row03['a1'];
+        }
+        if ($row03['a2'] == 0 || $row03['a2'] == null) {
+            $division3 = 1;
+        } else {
+            $division3 = $row03['a2'];
+        }
+        if ($row03['a3'] == 0 || $row03['a3'] == null) {
+            $division4 = 1;
+        } else {
+            $division4 = $row03['a3'];
+        }
+        if ($row03['a4'] == 0 || $row03['a4'] == null) {
+            $division5 = 1;
+        } else {
+            $division5 = $row03['a4'];
+        }
+        if ($row03['a5'] == 0 || $row03['a5'] == null) {
+            $division6 = 1;
+        } else {
+            $division6 = $row03['a5'];
+        }
+        if ($row03['a6'] == 0 || $row03['a6'] == null) {
+            $division7 = 1;
+        } else {
+            $division7 = $row03['a6'];
+        }
+        if ($row03['a7'] == 0 || $row03['a7'] == null) {
+            $division8 = 1;
+        } else {
+            $division8 = $row03['a7'];
+        }
+        if ($row03['a8'] == 0 || $row03['a8'] == null) {
+            $division9 = 1;
+        } else {
+            $division9 = $row03['a8'];
+        }
+
+        // 최소
+        $min1 = $row04['a0'];
+        $min2 = $row04['a2'];
+        $min3 = $row04['a4'];
+        $min4 = $row04['a6'];
+        $min5 = $row04['a8'];
+        $min6 = $row04['a10'];
+        $min7 = $row04['a12'];
+        $min8 = $row04['a14'];
+        $min9 = $row04['a16'];
+
+        //최대
+        $max1 = $row04['a1'];
+        $max2 = $row04['a3'];
+        $max3 = $row04['a5'];
+        $max4 = $row04['a7'];
+        $max5 = $row04['a9'];
+        $max6 = $row04['a11'];
+        $max7 = $row04['a13'];
+        $max8 = $row04['a15'];
+        $max9 = $row04['a17'];
+
+        //편차
+        $diff_value1 = $row05['a0'];
+        $diff_value2 = $row05['a1'];
+        $diff_value3 = $row05['a2'];
+        $diff_value4 = $row05['a3'];
+        $diff_value5 = $row05['a4'];
+        $diff_value6 = $row05['a5'];
+        $diff_value7 = $row05['a6'];
+        $diff_value8 = $row05['a7'];
+        $diff_value9 = $row05['a8'];
+
+        //적정온도
+        $mid1 = $row06['a0'];
+        $mid2 = $row06['a1'];
+        $mid3 = $row06['a2'];
+        $mid4 = $row06['a3'];
+        $mid5 = $row06['a4'];
+        $mid6 = $row06['a5'];
+        $mid7 = $row06['a6'];
+        $mid8 = $row06['a7'];
+        $mid9 = $row06['a8'];
+
+        //데이터
+        //$result001 = number_format(($data1 / $division1) + $diff_value1, 2);
+        //$result002 = number_format(($data2 / $division2) + $diff_value2, 2);
+        //$result003 = number_format(($data3 / $division3) + $diff_value3, 2);
+        //$result004 = number_format(($data4 / $division4) + $diff_value4, 2);
+        //$result005 = number_format(($data5 / $division5) + $diff_value5, 2);
+        //$result006 = number_format(($data6 / $division6) + $diff_value6, 2);
+        //$result007 = number_format(($data7 / $division7) + $diff_value7, 2);
+        //$result008 = number_format(($data8 / $division8) + $diff_value8, 2);
+        //$result009 = number_format(($data9 / $division9) + $diff_value9, 2);
+
+        if($data1 == -1){$result001 = "ㅡ";}else{$result001 = number_format(($data1 / $division1) + $diff_value1, 2);}
+        if($data2 == -1){$result002 = "ㅡ";}else{$result002 = number_format(($data2 / $division2) + $diff_value2, 2);}
+        if($data3 == -1){$result003 = "ㅡ";}else{$result003 = number_format(($data3 / $division3) + $diff_value3, 2);}
+        if($data4 == -1){$result004 = "ㅡ";}else{$result004 = number_format(($data4 / $division4) + $diff_value4, 2);}
+        if($data5 == -1){$result005 = "ㅡ";}else{$result005 = number_format(($data5 / $division5) + $diff_value5, 2);}
+        if($data6 == -1){$result006 = "ㅡ";}else{$result006 = number_format(($data6 / $division6) + $diff_value6, 2);}
+        if($data7 == -1){$result007 = "ㅡ";}else{$result007 = number_format(($data7 / $division7) + $diff_value7, 2);}
+        if($data8 == -1){$result008 = "ㅡ";}else{$result008 = number_format(($data8 / $division8) + $diff_value8, 2);}
+        if($data9 == -1){$result009 = "ㅡ";}else{$result009 = number_format(($data9 / $division9) + $diff_value9, 2);}
+
+
+                            //전체 상태 표기
+                            //미사용이면 검사안함 -- 회색
+                            if ($row04['index1'] != '1') {
+
+                                //데이터가 -1이면 ㅡ로 표시하고 검사안함
+                                if ($result001 != "ㅡ") {
+                                    if (($result001 > $max1) || ($result001 < $min1)) {
+                                        //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+                                        $sql111 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+                                        $res111 = mysqli_query($conn, $sql111);
+                                    }
+                                }
+
+                                //데이터가 -1이면 ㅡ로 표시하고 검사안함
+                                if ($result002 != "ㅡ") {
+                                    if (($result002 > $max2) || ($result002 < $min2)) {
+                                        //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+                                        $sql111 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+                                        $res111 = mysqli_query($conn, $sql111);
+                                    }
+                                }
+
+
+                                //데이터가 -1이면 ㅡ로 표시하고 검사안함
+                                if ($result003 != "ㅡ") {
+                                    if (($result003 > $max3) || ($result003 < $min3)) {
+                                        //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+                                        $sql111 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+                                        $res111 = mysqli_query($conn, $sql111);
+                                    }
+                                }
+
+                                //데이터가 -1이면 ㅡ로 표시하고 검사안함
+                                if ($result004 != "ㅡ") {
+                                    if (($result004 > $max4) || ($result004 < $min4)) {
+                                        //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+                                        $sql111 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+                                        $res111 = mysqli_query($conn, $sql111);
+                                    }
+                                }
+
+                                //데이터가 -1이면 ㅡ로 표시하고 검사안함
+                                if ($result005 != "ㅡ") {
+                                    if (($result005 > $max5) || ($result005 < $min5)) {
+                                        //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+                                        $sql111 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+                                        $res111 = mysqli_query($conn, $sql111);
+                                    }
+                                }
+
+                                //데이터가 -1이면 ㅡ로 표시하고 검사안함
+                                if ($result006 != "ㅡ") {
+                                    if (($result006 > $max6) || ($result006 < $min6)) {
+                                        //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+                                        $sql111 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+                                        $res111 = mysqli_query($conn, $sql111);
+                                    }
+                                }
+
+
+                                //데이터가 -1이면 ㅡ로 표시하고 검사안함
+                                if ($result007 != "ㅡ") {
+                                    if (($result007 > $max7) || ($result007 < $min7)) {
+                                        //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+                                        $sql111 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+                                        $res111 = mysqli_query($conn, $sql111);
+                                    }
+                                }
+
+                                //데이터가 -1이면 ㅡ로 표시하고 검사안함
+                                if ($result008 != "ㅡ") {
+                                    if (($result008 > $max8) || ($result008 < $min8)) {
+                                        //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+                                        $sql111 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+                                        $res111 = mysqli_query($conn, $sql111);
+                                    }
+                                }
+
+
+                                //데이터가 -1이면 ㅡ로 표시하고 검사안함
+                                if ($result009 != "ㅡ") {
+                                    if (($result009 > $max9) || ($result009 < $min9)) {
+                                        //하나라도 값을 벗어났을때 id값에 맞는 호기의 resp1에 1 ==> 경고등 켬
+                                        $sql111 = "update controll1 set resp1 = '1' where id='" . $_GET['num'] . "'";
+                                        $res111 = mysqli_query($conn, $sql111);
+                                    }
+                                }
+
+
+}
+
+
+
+        $blue = "#3867D6";
+        $red = "#F03434";
+        $green = "#00ad42";
+        $grey = "grey";
+
+
+        if ($result001 < $min1) {
+            $circle1 = $blue;
+        } else if ($result001 > $max1) {
+            $circle1 = $red;
+        } else if ($result001 >= $min1 && $result001 <= $max1) {
+            $circle1 = $green;
+        } else {
+            $circle1 = $grey;
+        }
+
+        if ($result002 < $min2) {
+            $circle2 = $blue;
+        } else if ($result002 > $max2) {
+            $circle2 = $red;
+        } else if ($result002 >= $min2 && $result002 <= $max2) {
+            $circle2 = $green;
+        } else {
+            $circle2 = $grey;
+        }
+
+        if ($result003 < $min3) {
+            $circle3 = $blue;
+        } else if ($result003 > $max3) {
+            $circle3 = $red;
+        } else if ($result003 >= $min3 && $result003 <= $max3) {
+            $circle3 = $green;
+        } else {
+            $circle3 = $grey;
+        }
+
+        if ($result004 < $min4) {
+            $circle4 = $blue;
+        } else if ($result004 > $max4) {
+            $circle4 = $red;
+        } else if ($result004 >= $min4 && $result004 <= $max4) {
+            $circle4 = $green;
+        } else {
+            $circle4 = $grey;
+        }
+
+        if ($result005 < $min5) {
+            $circle5 = $blue;
+        } else if ($result005 > $max5) {
+            $circle5 = $red;
+        } else if ($result005 >= $min5 && $result005 <= $max5) {
+            $circle5 = $green;
+        } else {
+            $circle5 = $grey;
+        }
+
+        if ($result006 < $min6) {
+            $circle6 = $blue;
+        } else if ($result006 > $max6) {
+            $circle6 = $red;
+        } else if ($result006 >= $min6 && $result006 <= $max6) {
+            $circle6 = $green;
+        } else {
+            $circle6 = $grey;
+        }
+
+        if ($result007 < $min7) {
+            $circle7 = $blue;
+        } else if ($result007 > $max7) {
+            $circle7 = $red;
+        } else if ($result007 >= $min7 && $result007 <= $max7) {
+            $circle7 = $green;
+        } else {
+            $circle7 = $grey;
+        }
+
+        if ($result008 < $min8) {
+            $circle8 = $blue;
+        } else if ($result008 > $max8) {
+            $circle8 = $red;
+        } else if ($result008 >= $min8 && $result008 <= $max8) {
+            $circle8 = $green;
+        } else {
+            $circle8 = $grey;
+        }
+
+        if ($result009 < $min9) {
+            $circle9 = $blue;
+        } else if ($result009 > $max9) {
+            $circle9 = $red;
+        } else if ($result009 >= $min9 && $result009 <= $max9) {
+            $circle9 = $green;
+        } else {
+            $circle9 = $grey;
+        }
+
+        // //백분율로 나타냄 (값 - 최소값) / (최대값 - 최소값)
+        // $percent1 = (($result001 - $min1) / ($max1 - $min1)) * 100;
+        // $percent2 = (($result002 - $min2) / ($max2 - $min2)) * 100;
+        // $percent3 = (($result003 - $min3) / ($max3 - $min3)) * 100;
+        // $percent4 = (($result004 - $min4) / ($max4 - $min4)) * 100;
+        // $percent5 = (($result005 - $min5) / ($max5 - $min5)) * 100;
+        // $percent6 = (($result006 - $min6) / ($max6 - $min6)) * 100;
+        // $percent7 = (($result007 - $min7) / ($max7 - $min7)) * 100;
+        // $percent8 = (($result008 - $min8) / ($max8 - $min8)) * 100;
+
+
+        ?>
+        <div class="wrapper">
+            <!-- 상단바 -->
+            <div class="top_bar">
+                <div class="top_box">
+                    <p class="top_title">현재날짜</p>
+                    <p class="top_text">
+                        <?php echo $top_date; ?>
+                    </p>
+                </div>
+                <div class="top_box">
+                    <p class="top_title">현재시간</p>
+                    <p class="top_text">
+                        <span class='clock' id='clock'></span>
+                    </p>
+                </div>
+                <div class="top_box">
+                    <p class="top_title">수량</p>
+                    <p class="top_text">
+                        <?php echo $top_count; ?>
+                    </p>
+                </div>
+                <div class="top_box">
+                    <p class="top_title">CT</p>
+                    <p class="top_text">
+                        <?php echo $top_ct; ?>
+                    </p>
+                </div>
+                <div class="top_btn_save">
+                    <input class="btn_save" type="submit" value="저장">
+                </div>
+            </div>
+            <!-- 메인표시 -->
+            <div class="main">
+                <!-- 첫쨰줄 -->
+                <div class="main_box1">
+                    <div class="mc_box">
+                        <div class="title1">
+                            <p class="title">호기</p>
+                            <p class="text">
+                                <?php echo $menu1; ?>
+                            </p>
+                        </div>
+                        <div class="acc1">
+                            <p class="title">최근검사날짜</p>
+                            <p class="text">
+                                <?php echo $ins_date; ?>
+                            </p>
+                        </div>
+                        <div class="acc2">
+                            <p class="title">최근검사시간</p>
+                            <p class="text">
+                                <?php echo $ins_time; ?>
+                            </p>
+                        </div>
+                    </div>
+                    <div class="main_box">
+                        <div class="title">고정금형</div>
+                        <div class="b_circle">
+                            <div class="s_circle" style="border: 2px solid <?php echo $circle1; ?>;">
+                                <?php echo $result001; ?>
+                            </div>
+                        </div>
+                        <div class="acc">
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_left1.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_left1.value--;' value='▼' />
+                            </div>
+                            <div class="min1">
+                                <div class="min3">
+                                    <input id='text_left1' name="text_left1" value='<?php echo $min1; ?>' required>
+                                </div>
+                            </div>
+                            <div class="mid1">
+                                <div class="mid3">
+                                    <?php echo $mid1; ?>
+                                </div>
+                            </div>
+                            <div class="max1">
+                                <div class="max3">
+                                    <input id='text_right1' name="text_right1" value='<?php echo $max1; ?>' required>
+                                </div>
+                            </div>
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_right1.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_right1.value--;' value='▼' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main_box">
+                        <div class="title">이동금형</div>
+                        <div class="b_circle">
+                            <div class="s_circle" style="border: 2px solid <?php echo $circle2; ?>;">
+                                <?php echo $result002; ?>
+                            </div>
+                        </div>
+                        <div class="acc">
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_left2.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_left2.value--;' value='▼' />
+                            </div>
+                            <div class="min1">
+                                <div class="min3">
+                                    <input id='text_left2' name="text_left2" value='<?php echo $min2; ?>' required>
+                                </div>
+                            </div>
+                            <div class="mid1">
+                                <div class="mid3">
+                                    <?php echo $mid2; ?>
+                                </div>
+                            </div>
+                            <div class="max1">
+                                <div class="max3">
+                                    <input id='text_right2' name="text_right2" value='<?php echo $max2; ?>' required>
+                                </div>
+                            </div>
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_right2.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_right2.value--;' value='▼' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main_box">
+                        <div class="title">회전금형</div>
+                        <div class="b_circle">
+                            <div class="s_circle" style="border: 2px solid <?php echo $circle3; ?>;">
+                                <?php echo $result003; ?>
+                            </div>
+                        </div>
+                        <div class="acc">
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_left3.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_left3.value--;' value='▼' />
+                            </div>
+                            <div class="min1">
+                                <div class="min3">
+                                    <input id='text_left3' name="text_left3" value='<?php echo $min3; ?>' required>
+                                </div>
+                            </div>
+                            <div class="mid1">
+                                <div class="mid3">
+                                    <?php echo $mid3; ?>
+                                </div>
+                            </div>
+                            <div class="max1">
+                                <div class="max3">
+                                    <input id='text_right3' name="text_right3" value='<?php echo $max3; ?>' required>
+                                </div>
+                            </div>
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_right3.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_right3.value--;' value='▼' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main_box">
+                        <div class="title">호퍼드라이</div>
+                        <div class="b_circle">
+                            <div class="s_circle" style="border: 2px solid <?php echo $circle4; ?>;">
+                                <?php echo $result004; ?>
+                            </div>
+                        </div>
+                        <div class="acc">
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_left4.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_left4.value--;' value='▼' />
+                            </div>
+                            <div class="min1">
+                                <div class="min3">
+                                    <input id='text_left4' name="text_left4" value='<?php echo $min4; ?>' required>
+                                </div>
+                            </div>
+                            <div class="mid1">
+                                <div class="mid3">
+                                    <?php echo $mid4; ?>
+                                </div>
+                            </div>
+                            <div class="max1">
+                                <div class="max3">
+                                    <input id='text_right4' name="text_right4" value='<?php echo $max4; ?>' required>
+                                </div>
+                            </div>
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_right4.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_right4.value--;' value='▼' />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <!-- 둘쨰줄 -->
+                <div class="main_box2">
+                    <div class="main_box">
+                        <div class="title">냉각수IN</div>
+                        <div class="b_circle">
+                            <div class="s_circle" style="border: 2px solid <?php echo $circle5; ?>;">
+                                <?php echo $result005; ?>
+                            </div>
+                        </div>
+                        <div class="acc">
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_left5.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_left5.value--;' value='▼' />
+                            </div>
+                            <div class="min1">
+                                <div class="min3">
+                                    <input id='text_left5' name="text_left5" value='<?php echo $min5; ?>' required>
+                                </div>
+                            </div>
+                            <div class="mid1">
+                                <div class="mid3">
+                                    <?php echo $mid5; ?>
+                                </div>
+                            </div>
+                            <div class="max1">
+                                <div class="max3">
+                                    <input id='text_right5' name="text_right5" value='<?php echo $max5; ?>' required>
+                                </div>
+                            </div>
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_right5.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_right5.value--;' value='▼' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main_box">
+                        <div class="title">냉각수OUT</div>
+                        <div class="b_circle">
+                            <div class="s_circle" style="border: 2px solid <?php echo $circle6; ?>;">
+                                <?php echo $result006; ?>
+                            </div>
+                        </div>
+                        <div class="acc">
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_left6.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_left6.value--;' value='▼' />
+                            </div>
+                            <div class="min1">
+                                <div class="min3">
+                                    <input id='text_left6' name="text_left6" value='<?php echo $min6; ?>' required>
+                                </div>
+                            </div>
+                            <div class="mid1">
+                                <div class="mid3">
+                                    <?php echo $mid6; ?>
+                                </div>
+                            </div>
+                            <div class="max1">
+                                <div class="max3">
+                                    <input id='text_right6' name="text_right6" value='<?php echo $max6; ?>' required>
+                                </div>
+                            </div>
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_right6.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_right6.value--;' value='▼' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main_box">
+                        <div class="title">온수기IN</div>
+                        <div class="b_circle">
+                            <div class="s_circle" style="border: 2px solid <?php echo $circle7; ?>;">
+                                <?php echo $result007; ?>
+                            </div>
+                        </div>
+                        <div class="acc">
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_left7.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_left7.value--;' value='▼' />
+                            </div>
+                            <div class="min1">
+                                <div class="min3">
+                                    <input id='text_left7' name="text_left7" value='<?php echo $min7; ?>' required>
+                                </div>
+                            </div>
+                            <div class="mid1">
+                                <div class="mid3">
+                                    <?php echo $mid7; ?>
+                                </div>
+                            </div>
+                            <div class="max1">
+                                <div class="max3">
+                                    <input id='text_right7' name="text_right7" value='<?php echo $max7; ?>' required>
+                                </div>
+                            </div>
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_right7.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_right7.value--;' value='▼' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main_box">
+                        <div class="title">온수기OUT</div>
+                        <div class="b_circle">
+                            <div class="s_circle" style="border: 2px solid <?php echo $circle8; ?>;">
+                                <?php echo $result008; ?>
+                            </div>
+                        </div>
+                        <div class="acc">
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_left8.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_left8.value--;' value='▼' />
+                            </div>
+                            <div class="min1">
+                                <div class="min3">
+                                    <input id='text_left8' name="text_left8" value='<?php echo $min8; ?>' required>
+                                </div>
+                            </div>
+                            <div class="mid1">
+                                <div class="mid3">
+                                    <?php echo $mid8; ?>
+                                </div>
+                            </div>
+                            <div class="max1">
+                                <div class="max3">
+                                    <input id='text_right8' name="text_right8" value='<?php echo $max8; ?>' required>
+                                </div>
+                            </div>
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_right8.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_right8.value--;' value='▼' />
+                            </div>
+                        </div>
+                    </div>
+                    <div class="main_box">
+                        <div class="title">작동유</div>
+                        <div class="b_circle">
+                            <div class="s_circle" style="border: 2px solid <?php echo $circle9; ?>;">
+                                <?php echo $result009; ?>
+                            </div>
+                        </div>
+                        <div class="acc">
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_left9.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_left9.value--;' value='▼' />
+                            </div>
+                            <div class="min1">
+                                <div class="min3">
+                                    <input id='text_left9' name="text_left9" value='<?php echo $min9; ?>' required>
+                                </div>
+                            </div>
+                            <div class="mid1">
+                                <div class="mid3">
+                                    <?php echo $mid9; ?>
+                                </div>
+                            </div>
+                            <div class="max1">
+                                <div class="max3">
+                                    <input id='text_right9' name="text_right9" value='<?php echo $max9; ?>' required>
+                                </div>
+                            </div>
+                            <div class='btn_convert'>
+                                <input type='button' onclick='javascript:this.form.text_right9.value++;' value='▲' />
+                                <input type='button' onclick='javascript:this.form.text_right9.value--;' value='▼' />
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </form>
+    <script>
+    //시계
+    const clock = document.querySelector('.clock');
+
+    function getTime() {
+        const time = new Date();
+        const hour = time.getHours();
+        const minutes = time.getMinutes();
+        const seconds = time.getSeconds();
+        //clock.innerHTML = hour +":" + minutes + ":"+seconds;
+        clock.innerHTML = `${hour<10 ? `0${hour}`:hour}:${minutes<10 ? `0${minutes}`:minutes}:${seconds<10 ? `0${seconds}`:seconds}`
+    }
+
+    function init() {
+        setInterval(getTime, 1000);
+    }
+init();
+    </script>
+</body>
+
+</html>

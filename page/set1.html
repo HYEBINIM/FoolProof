@@ -1,0 +1,160 @@
+<!-- 
+프로젝트 : 사출기 통합 현황 풀프루프
+시작일자 : 2023-03-28
+제작자 : 임혜빈
+코멘트 : 
+-->
+
+<?php
+session_start();
+$conn = new mysqli("localhost", "server", "00000000", "dataset");
+
+//테마
+$sql00 = "select * from theme where id = '1'";
+$res00 = mysqli_query($conn, $sql00);
+$row00 = mysqli_fetch_array($res00);
+
+if ($row00['theme'] == null) {
+    $theme = 1;
+} else {
+    $theme = $row00['theme'];
+}
+?>
+<!DOCTYPE html>
+<html lang="ko">
+
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>EAST</title>
+    <link rel="stylesheet" href="/css/set1_<?php echo $theme; ?>.css">
+</head>
+
+<body>
+    <!-- 전체 판넬 -->
+    <div class="wrapper">
+
+        <!-- 상단바 -->
+        <div class="top_bar">
+            <div class="logo">
+                <a class='logo_item' href="/index.html">EAST</a>
+            </div>
+            <div class="menu">
+                <a class='menu_item' href="/index.html">메인 화면</a>
+                <a class='menu_item active' href="/page/set1.html">최소 최대</a>
+                <a class='menu_item' href="/page/set2.html">분해능 설정</a>
+                <a class='menu_item' href="/page/set4.html">적정 온도</a>
+                <a class='menu_item' href="/page/set3.html">센서 편차</a>
+                <!-- <a class='menu_item' href="/page/theme.html">테마 설정</a> -->
+            </div>
+        </div>
+        <!-- /상단바 -->
+
+        <!-- 메인 판넬 -->
+        <div class="main_panel">
+            <!-- 메인 콘텐츠 -->
+            <div class="main_content">
+                <!-- 최소 최대 -->
+                <form method="post" action="/action/set1.html">
+                    <!-- 상단 파란선 -->
+                    <div class="line"></div>
+                    <div class="box_title">
+                        <p class="title">최소 최대</p>
+                        <button type='submit' class="btn_set_save">저장</button>
+                    </div>
+                    <div class="box_set">
+                        <table>
+                            <tr>
+                                <th rowspan="2">미사용</th>
+                                <th rowspan="2">호기</th>
+                                <th colspan="2">고정금형</th>
+                                <th colspan="2">이동금형</th>
+                                <th colspan="2">회전금형</th>
+                                <th colspan="2">호퍼드라이건조</th>
+                                <th colspan="2">냉각수IN</th>
+                                <th colspan="2">냉각수OUT</th>
+                                <th colspan="2">온수기IN</th>
+                                <th colspan="2">온수기OUT</th>
+                                <th colspan="2">작동유</th>
+                            </tr>
+                            <tr>
+                                <th>최소</th>
+                                <th>최대</th>
+                                <th>최소</th>
+                                <th>최대</th>
+                                <th>최소</th>
+                                <th>최대</th>
+                                <th>최소</th>
+                                <th>최대</th>
+                                <th>최소</th>
+                                <th>최대</th>
+                                <th>최소</th>
+                                <th>최대</th>
+                                <th>최소</th>
+                                <th>최대</th>
+                                <th>최소</th>
+                                <th>최대</th>
+                                <th>최소</th>
+                                <th>최대</th>
+                            </tr>
+                            <?php
+                            for ($count = 1; $count <= 19; $count++) {
+                                $sql01 = "select * from dr1 where id='" . $count . "'";
+                                $res01 = mysqli_query($conn, $sql01);
+                                $row01 = mysqli_fetch_array($res01);
+
+                                //체크박스
+                                if ($row01['index1'] == 1) {
+                                    $checkbox = "checked";
+                                } else {
+                                    $checkbox = "";
+                                }
+
+                                //체크박스 체크시 disabled
+                                if ($checkbox == "checked") {
+                                    $disabled = "style='background-color:#ccc;'";
+                                } else {
+                                    $disabled = "";
+                                }
+
+                                echo "
+                                    <tr>
+                                    <td><input type='checkbox' name='check" . $count . "' " . $checkbox . "></td>
+                                    <td>" . $count . "</td>
+                                    <td><input type='text' name='min" . $count . "_1' value='" . $row01['a0'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='max" . $count . "_1' value='" . $row01['a1'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='min" . $count . "_2' value='" . $row01['a2'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='max" . $count . "_2' value='" . $row01['a3'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='min" . $count . "_3' value='" . $row01['a4'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='max" . $count . "_3' value='" . $row01['a5'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='min" . $count . "_4' value='" . $row01['a6'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='max" . $count . "_4' value='" . $row01['a7'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='min" . $count . "_5' value='" . $row01['a8'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='max" . $count . "_5' value='" . $row01['a9'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='min" . $count . "_6' value='" . $row01['a10'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='max" . $count . "_6' value='" . $row01['a11'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='min" . $count . "_7' value='" . $row01['a12'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='max" . $count . "_7' value='" . $row01['a13'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='min" . $count . "_8' value='" . $row01['a14'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='max" . $count . "_8' value='" . $row01['a15'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='min" . $count . "_9' value='" . $row01['a16'] . "' " . $disabled . "></td>
+                                    <td><input type='text' name='max" . $count . "_9' value='" . $row01['a17'] . "' " . $disabled . "></td>
+                                    </tr>
+                                    ";
+                            }
+                            ?>
+                        </table>
+                    </div>
+                </form>
+                <!-- /최소 최대 -->
+            </div>
+            <!-- /메인 콘텐츠 -->
+        </div>
+        <!-- /메인 판넬 -->
+
+    </div>
+    <!-- /전체 판넬 -->
+</body>
+
+</html>
