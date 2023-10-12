@@ -9,6 +9,18 @@
 session_start();
 $conn = new mysqli("localhost", "server", "00000000", "dataset");
 
+// 테마
+$sql00 = "select * from theme where id = '1'";
+$res00 = mysqli_query($conn, $sql00);
+$row00 = mysqli_fetch_array($res00);
+
+if ($row00['theme'] == null) {
+    $theme = 1;
+} else {
+    $theme = $row00['theme'];
+}
+
+
 //순서
 // 금형1
 // 금형2
@@ -265,7 +277,6 @@ if (file_exists($fileName)) {
     <!-- <META HTTP-EQUIV="refresh" CONTENT="3"> -->
     <title>EAST</title>
     <link rel="stylesheet" href="/css/index.css">
-    <script type="text/javascript" src="//code.jquery.com/jquery.min.js"></script>
 </head>
 
 <body>
@@ -317,14 +328,128 @@ if (file_exists($fileName)) {
             <?php
 
             for ($count = 1; $count <= 19; $count++) {
+                //가장 최근 검사값
+                $sql = "select * from result1 where mc_num='" . sprintf('%03d', $count) . "'  order by id desc limit 1";
+                $res = mysqli_query($conn, $sql);
+                $row = mysqli_fetch_array($res);
 
-                echo "
+                //분해능
+                $sql01 = "select * from cr1 where id='" . $count . "'";
+                $res01 = mysqli_query($conn, $sql01);
+                $row01 = mysqli_fetch_array($res01);
+
+
+                //최소값 최대값
+                $sql02 = "select * from dr1 where id='" . $count . "'";
+                $res02 = mysqli_query($conn, $sql02);
+                $row02 = mysqli_fetch_array($res02);
+
+
+                //편차
+                $sql08 = "select * from er1 where id='" . $count . "'";
+                $res08 = mysqli_query($conn, $sql08);
+                $row08 = mysqli_fetch_array($res08);
+
+                $division1 = $row01['a0'];
+                $division2 = $row01['a1'];
+                $division3 = $row01['a2'];
+                $division4 = $row01['a3'];
+                $division5 = $row01['a4'];
+                $division6 = $row01['a5'];
+                $division7 = $row01['a6'];
+                $division8 = $row01['a7'];
+                $division9 = $row01['a8'];
+
+                $diff_value1 = $row08['a0'];
+                $diff_value2 = $row08['a1'];
+                $diff_value3 = $row08['a2'];
+                $diff_value4 = $row08['a3'];
+                $diff_value5 = $row08['a4'];
+                $diff_value6 = $row08['a5'];
+                $diff_value7 = $row08['a6'];
+                $diff_value8 = $row08['a7'];
+                $diff_value9 = $row08['a8'];
+
+                $min1 = $row02['a0'];
+                $min2 = $row02['a2'];
+                $min3 = $row02['a4'];
+                $min4 = $row02['a6'];
+                $min5 = $row02['a8'];
+                $min6 = $row02['a10'];
+                $min7 = $row02['a12'];
+                $min8 = $row02['a14'];
+                $min9 = $row02['a16'];
+
+                $max1 = $row02['a1'];
+                $max2 = $row02['a3'];
+                $max3 = $row02['a5'];
+                $max4 = $row02['a7'];
+                $max5 = $row02['a9'];
+                $max6 = $row02['a11'];
+                $max7 = $row02['a13'];
+                $max8 = $row02['a15'];
+                $max9 = $row02['a17'];
+
+                //회전금형호기
+                if ($count == '11' || $count == '12' || $count == '13' || $count == '14' || $count == '15') {
+                    $data1 = $row['data1']; //고정
+                    $data2 = $row['data2']; //이동
+                    $data3 = $row['data3']; //회전
+                    $data4 = $row['data7']; //호퍼
+                    $data5 = $row['data4']; //냉인
+                    $data6 = $row['data5']; //냉아
+                    $data7 = $row['data6']; //온인
+                    $data8 = ""; //온아
+                    $data9 = $row['data8']; //작동
+
+                    $result001 = number_format((($data1 / $division1) + $diff_value1), 2);
+                    $result002 = number_format((($data2 / $division2) + $diff_value2), 2);
+                    $result003 = number_format((($data3 / $division3) + $diff_value3), 2);
+                    $result004 = number_format((($data4 / $division4) + $diff_value4), 2);
+                    $result005 = number_format((($data5 / $division5) + $diff_value5), 2);
+                    $result006 = number_format((($data6 / $division6) + $diff_value6), 2);
+                    $result007 = number_format((($data7 / $division7) + $diff_value7), 2);
+                    $result008 = number_format((($data7 / $division8) + $diff_value8), 2); //온아
+                    $result009 = number_format((($data9 / $division9) + $diff_value9), 2);
+
+
+                    if ($data1 == null || $data1 == '-1' || $data1 == "") {
+                        $result001 = "ㅡ";
+                    }
+                    if ($data2 == null || $data2 == '-1' || $data2 == "") {
+                        $result002 = "ㅡ";
+                    }
+                    if ($data3 == null || $data3 == '-1' || $data3 == "") {
+                        $result003 = "ㅡ";
+                    }
+                    if ($data4 == null || $data4 == '-1' || $data4 == "") {
+                        $result004 = "ㅡ";
+                    }
+                    if ($data5 == null || $data5 == '-1' || $data5 == "") {
+                        $result005 = "ㅡ";
+                    }
+                    if ($data6 == null || $data6 == '-1' || $data6 == "") {
+                        $result006 = "ㅡ";
+                    }
+                    if ($data7 == null || $data7 == '-1' || $data7 == "") {
+                        $result007 = "ㅡ";
+                    }
+                    if ($data7 == null || $data7 == '-1' || $data7 == "") {
+                        $result008 = "ㅡ";
+                    }
+                    if ($data9 == null || $data9 == '-1' || $data9 == "") {
+                        $result009 = "ㅡ";
+                    }
+
+
+
+                    echo "
                     <div class='card'>
                     <div class='card_top'>
                         <div class='machine'>" . $count . "호기</div>
                         <div class='card_date'>
-                            <div class='date_item date" . $count . "'></div>
-                            <div class='time_item time" . $count . "'></div>
+                            <div class='date_item'>" . $row['date'] . "</div>
+                            <div class='time_item'>" . date('H시 i분 s초', $row['time']) . "</div>
                         </div>
                     </div>
                     <div id='time_status'><div class='time_all' id='time_all" . $count . "'></div></div>
@@ -338,46 +463,159 @@ if (file_exists($fileName)) {
                         <div class='value_item end'>
                             <div class='status' id='" . $count . "_2'></div>
                             <div class='value_name letter-spacing'>이동금형</div>
-                            <div class='value_text res" . $count . "_2'></div>
+                            <div class='value_text'>" . $result002 . "</div>
                         </div>
                         <div class='value_item'>
                             <div class='status' id='" . $count . "_3'></div>
                             <div class='value_name letter-spacing'>회전금형</div>
-                            <div class='value_text res" . $count . "_3'></div>
+                            <div class='value_text'>" . $result003 . "</div>
                         </div>
                         <div class='value_item end'>
                             <div class='status' id='" . $count . "_4'></div>
                             <div class='value_name'>호&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;퍼</div>
-                            <div class='value_text res" . $count . "_4'></div>
+                            <div class='value_text'>" . $result004 . "</div>
                         </div>
                         <div class='value_item'>
                             <div class='status' id='" . $count . "_5'></div>
                             <div class='value_name'><span class='space'>냉각수</span>IN</div>
-                            <div class='value_text res" . $count . "_5'></div>
+                            <div class='value_text'>" . $result005 . "</div>
                         </div>
                         <div class='value_item end'>
                             <div class='status' id='" . $count . "_6'></div>
                             <div class='value_name'>냉각OUT</div>
-                            <div class='value_text res" . $count . "_6'></div>
+                            <div class='value_text'>" . $result006 . "</div>
                         </div>
                         <div class='value_item'>
                             <div class='status' id='" . $count . "_7'></div>
                             <div class='value_name'><span class='space_little'>온수기</span>IN</div>
-                            <div class='value_text res" . $count . "_7'></div>
+                            <div class='value_text'>" . $result007 . "</div>
                         </div>
                             <div class='value_item end'>
                             <div class='status' id='" . $count . "_8'></div>
                             <div class='value_name'>온수OUT</div>
-                            <div class='value_text res" . $count . "_8'></div>
+                            <div class='value_text'>" . $result008 . "</div>
                         </div>
                         <div class='value_item'>
                             <div class='status' id='" . $count . "_9'></div>
                             <div class='value_name'>작&nbsp;&nbsp;동&nbsp;&nbsp;유</div>
-                            <div class='value_text res" . $count . "_9'></div>
+                            <div class='value_text'>" . $result009 . "</div>
+                        </div>
+                    </div>
+                    </div>
+                            ";
+                } else {
+                    $data1 = $row['data1']; //고정
+                    $data2 = $row['data2']; //이동
+                    $data3 = ""; //회전
+                    $data4 = $row['data7']; //호퍼
+                    $data5 = $row['data3']; //냉인
+                    $data6 = $row['data4']; //냉아
+                    $data7 = $row['data5']; //온인
+                    $data8 = $row['data6']; //온아
+                    $data9 = $row['data8']; //작동유
+
+                    $result001 = number_format((($data1 / $division1) + $diff_value1), 2);
+                    $result002 = number_format((($data2 / $division2) + $diff_value2), 2);
+                    $result003 = "ㅡ"; //회전
+                    $result004 = number_format((($data4 / $division4) + $diff_value4), 2);
+                    $result005 = number_format((($data5 / $division5) + $diff_value5), 2);
+                    $result006 = number_format((($data6 / $division6) + $diff_value6), 2);
+                    $result007 = number_format((($data7 / $division7) + $diff_value7), 2);
+                    $result008 = number_format((($data8 / $division8) + $diff_value8), 2);
+                    $result009 = number_format((($data9 / $division9) + $diff_value9), 2);
+
+                    if ($data1 == null || $data1 == '-1' || $data1 == "") {
+                        $result001 = "ㅡ";
+                    }
+                    if ($data2 == null || $data2 == '-1' || $data2 == "") {
+                        $result002 = "ㅡ";
+                    }
+                    if ($data3 == null || $data3 == '-1' || $data3 == "") {
+                        $result003 = "ㅡ";
+                    }
+                    if ($data4 == null || $data4 == '-1' || $data4 == "") {
+                        $result004 = "ㅡ";
+                    }
+                    if ($data5 == null || $data5 == '-1' || $data5 == "") {
+                        $result005 = "ㅡ";
+                    }
+                    if ($data6 == null || $data6 == '-1' || $data6 == "") {
+                        $result006 = "ㅡ";
+                    }
+                    if ($data7 == null || $data7 == '-1' || $data7 == "") {
+                        $result007 = "ㅡ";
+                    }
+                    if ($data8 == null || $data8 == '-1' || $data8 == "") {
+                        $result008 = "ㅡ";
+                    }
+                    if ($data9 == null || $data9 == '-1' || $data9 == "") {
+                        $result009 = "ㅡ";
+                    }
+
+
+
+
+                    echo "
+                    <div class='card'>
+                    <div class='card_top'>
+                        <div class='machine'>" . $count . "호기</div>
+                        <div class='card_date'>
+                            <div class='date_item'>" . $row['date'] . "</div>
+                            <div class='time_item'>" . date('H시 i분 s초', $row['time']) . "</div>
+                        </div>
+                    </div>
+                    <div id='time_status'><div class='time_all' id='time_all" . $count . "'></div></div>
+                    <div id='color_status'><div class='status_all' id='status_all" . $count . "'></div></div>
+                    <div class='value'>
+                        <div class='value_item'>
+                            <div class='status' id='" . $count . "_1'></div>
+                            <div class='value_name letter-spacing'>고정금형</div>
+                            <div class='value_text res" . $count . "_1'></div>
+                        </div>
+                        <div class='value_item end'>
+                            <div class='status' id='" . $count . "_2'></div>
+                            <div class='value_name letter-spacing'>이동금형</div>
+                            <div class='value_text'>" . $result002 . "</div>
+                        </div>
+                        <div class='value_item'>
+                            <div class='status' id='" . $count . "_3'></div>
+                            <div class='value_name letter-spacing'>회전금형</div>
+                            <div class='value_text'>" . $result003 . "</div>
+                        </div>
+                        <div class='value_item end'>
+                            <div class='status' id='" . $count . "_4'></div>
+                            <div class='value_name'>호&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;퍼</div>
+                            <div class='value_text'>" . $result004 . "</div>
+                        </div>
+                        <div class='value_item'>
+                            <div class='status' id='" . $count . "_5'></div>
+                            <div class='value_name'><span class='space'>냉각수</span>IN</div>
+                            <div class='value_text'>" . $result005 . "</div>
+                        </div>
+                        <div class='value_item end'>
+                            <div class='status' id='" . $count . "_6'></div>
+                            <div class='value_name'>냉각OUT</div>
+                            <div class='value_text'>" . $result006 . "</div>
+                        </div>
+                        <div class='value_item'>
+                            <div class='status' id='" . $count . "_7'></div>
+                            <div class='value_name'><span class='space_little'>온수기</span>IN</div>
+                            <div class='value_text'>" . $result007 . "</div>
+                        </div>
+                            <div class='value_item end'>
+                            <div class='status' id='" . $count . "_8'></div>
+                            <div class='value_name'>온수OUT</div>
+                            <div class='value_text'>" . $result008 . "</div>
+                        </div>
+                        <div class='value_item'>
+                            <div class='status' id='" . $count . "_9'></div>
+                            <div class='value_name'>작&nbsp;&nbsp;동&nbsp;&nbsp;유</div>
+                            <div class='value_text'>" . $result009 . "</div>
                         </div>
                     </div>
                     </div>
                         ";
+                }
 
                 //최소
                 if ($result001 < $min1) {
@@ -796,12 +1034,15 @@ if (file_exists($fileName)) {
     //     $res001 = mysqli_query($conn, $sql001);
     //     $row001 = mysqli_fetch_array($res001);
     // }
-    $sql001 = "select * from result1 where mc_num='001'  order by id desc limit 1";
+    echo $sql001 = "select * from result1 where mc_num='001'  order by id desc limit 1";
     $res001 = mysqli_query($conn, $sql001);
     $row001 = mysqli_fetch_array($res001);
 
+    echo $_POST['name'];
+
     ?>
 
+    <iframe src="/sql.php" frameborder="1"></iframe>
     <script>
         //시계
         const clock = document.querySelector('.clock');
@@ -815,73 +1056,24 @@ if (file_exists($fileName)) {
             clock.innerHTML = `${hour<10 ? `0${hour}`:hour}:${minutes<10 ? `0${minutes}`:minutes}:${seconds<10 ? `0${seconds}`:seconds}`
         }
 
+        const data1_1 = document.querySelector('.res1_1');
+
+        function get1_1() {
+            <?php
+            echo "var jsvar = '" . $_SESSION['data1'] . "';";
+            ?>
+            console.log(jsvar);
+            data1_1.innerHTML = jsvar;
+        }
+
+
+
         function init() {
             setInterval(getTime, 1000);
+            setInterval(get1_1, 1000);
         }
 
         init();
-
-        //데이터 갱신★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-        var timerID;
-        var timerID2;
-
-        $(document).ready(function() {
-            updateData();
-            updateDate();
-        });
-
-        function updateData() {
-            $.ajax({
-                url: "/getvalue.php",
-                type: "post",
-                cache: false,
-                success: function(data) { // getserver.php 파일에서 echo 결과값이 data 임
-
-                    var array = JSON.parse(data);
-                    // console.log(array);
-
-                    // console.log(data);
-
-                    // console.log(data);
-                    // var arr = data.split(',');
-
-                    // // $('.res' + index + '_1').html(arr[0]);
-                    let index = 0;
-
-                    for (let mcnum = 1; mcnum <= 19; mcnum++) {
-                        for (let itemnum = 1; itemnum <= 9; itemnum++) {
-                            $('.res' + mcnum + '_' + itemnum + '').html(array['' + index + '']);
-                            index++;
-                        }
-                    }
-
-                }
-            });
-        }
-
-        //날짜 갱신★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-
-        function updateDate() {
-            $.ajax({
-                url: "/getdate.php",
-                type: "post",
-                cache: false,
-                success: function(date) { // getserver.php 파일에서 echo 결과값이 data 임
-
-                    var array2 = JSON.parse(date);
-                    let index2 = 0;
-
-                    for (let mcnum = 1; mcnum <= 19; mcnum++) {
-                        $('.date' + mcnum + '').html(array2['' + index2 + '']);
-                        index2++;
-                        $('.time' + mcnum + '').html(array2['' + index2 + '']);
-                        index2++;
-                    }
-
-                }
-            });
-            timerID2 = setTimeout("updateDate()", 1000); // 1초 단위로 갱신 처리
-        }
     </script>
 </body>
 

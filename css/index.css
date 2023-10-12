@@ -184,7 +184,7 @@ table {
     border-radius: 18px;
     margin: var(--margin-size-xs);
     box-shadow: var(--box-shadow-hover);
-    padding: 0px 15px;
+    padding: 0px 25px;
 }
 
 .title_top {
@@ -196,7 +196,6 @@ table {
     font-weight: 600;
     border-bottom: 1px solid var(--text-color3);
     display: flex;
-    padding-left: 15px;
 }
 
 .title_item {
@@ -213,16 +212,12 @@ table {
     margin-bottom: 2px;
     color: var(--text-color4);
     font-size: var(--font-size-14);
-    margin-left: 15px;
 }
 
 .title_text {
-    margin-top: 2px;
     margin-bottom: 2px;
-    margin-left: 10px;
     font-weight: 600;
-    font-size: 22px;
-    margin-left: 15px;
+    font-size: 25px;
     font-family: SCDream7;
     color: var(--text-color2);
 }
@@ -238,7 +233,7 @@ table {
     display: flex;
     flex-direction: column;
     align-items: center;
-    padding: 0px 15px;
+    padding: 0px 25px;
 }
 
 .card_top {
@@ -248,8 +243,6 @@ table {
     align-items: center;
     justify-content: space-between;
     border-bottom: 1px solid var(--text-color3);
-    padding-left: 15px;
-    padding-right: 15px;
 }
 
 .machine {
@@ -272,7 +265,7 @@ table {
 .date_item {
     color: var(--text-color2);
     font-size: var(--font-size-12);
-    letter-spacing: 1.5px;
+    letter-spacing: 1.6px;
 }
 
 .time_item {
@@ -286,8 +279,6 @@ table {
     display: flex;
     flex-wrap: wrap;
     justify-content: space-between;
-    padding-left: 15px;
-    padding-right: 15px;
     margin-top: 15px;
     margin-bottom: 15px;
 }
