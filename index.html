@@ -803,85 +803,87 @@ if (file_exists($fileName)) {
     ?>
 
     <script>
-        //시계
-        const clock = document.querySelector('.clock');
+    //시계
+    const clock = document.querySelector('.clock');
 
-        function getTime() {
-            const time = new Date();
-            const hour = time.getHours();
-            const minutes = time.getMinutes();
-            const seconds = time.getSeconds();
-            //clock.innerHTML = hour +":" + minutes + ":"+seconds;
-            clock.innerHTML = `${hour<10 ? `0${hour}`:hour}:${minutes<10 ? `0${minutes}`:minutes}:${seconds<10 ? `0${seconds}`:seconds}`
-        }
+    function getTime() {
+        const time = new Date();
+        const hour = time.getHours();
+        const minutes = time.getMinutes();
+        const seconds = time.getSeconds();
+        //clock.innerHTML = hour +":" + minutes + ":"+seconds;
+        clock.innerHTML = `${hour<10 ? `0${hour}`:hour}:${minutes<10 ? `0${minutes}`:minutes}:${seconds<10 ? `0${seconds}`:seconds}`
+    }
 
-        function init() {
-            setInterval(getTime, 1000);
-        }
+    function init() {
+        setInterval(getTime, 1000);
+    }
 
-        init();
+    init();
 
-        //데이터 갱신★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-        var timerID;
-        var timerID2;
+    //데이터 갱신★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
+    var timerID;
+    var timerID2;
 
-        $(document).ready(function() {
-            updateData();
-            updateDate();
+    $(document).ready(function() {
+        updateData();
+        updateDate();
+    });
+
+    function updateData() {
+        $.ajax({
+            url: "/getvalue.php",
+            type: "post",
+            cache: false,
+            success: function(data) { // getserver.php 파일에서 echo 결과값이 data 임
+
+                var array = JSON.parse(data);
+                // console.log(array);
+
+                // console.log(data);
+
+                // console.log(data);
+                // var arr = data.split(',');
+
+                // // $('.res' + index + '_1').html(arr[0]);
+                let index = 0;
+
+                for (let mcnum = 1; mcnum <= 19; mcnum++) {
+                    for (let itemnum = 1; itemnum <= 9; itemnum++) {
+                        $('.res' + mcnum + '_' + itemnum + '').html(array['' + index + '']);
+                        index++;
+                    }
+                }
+
+            }
         });
+        timerID = setTimeout("updateData()", 1000); // 1초 단위로 갱신 처리
 
-        function updateData() {
-            $.ajax({
-                url: "/getvalue.php",
-                type: "post",
-                cache: false,
-                success: function(data) { // getserver.php 파일에서 echo 결과값이 data 임
+    }
 
-                    var array = JSON.parse(data);
-                    // console.log(array);
+    //날짜 갱신★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
 
-                    // console.log(data);
+    function updateDate() {
+        $.ajax({
+            url: "/getdate.php",
+            type: "post",
+            cache: false,
+            success: function(date) { // getserver.php 파일에서 echo 결과값이 data 임
 
-                    // console.log(data);
-                    // var arr = data.split(',');
+                var array2 = JSON.parse(date);
+                let index2 = 0;
 
-                    // // $('.res' + index + '_1').html(arr[0]);
-                    let index = 0;
-
-                    for (let mcnum = 1; mcnum <= 19; mcnum++) {
-                        for (let itemnum = 1; itemnum <= 9; itemnum++) {
-                            $('.res' + mcnum + '_' + itemnum + '').html(array['' + index + '']);
-                            index++;
-                        }
-                    }
-
+                for (let mcnum = 1; mcnum <= 19; mcnum++) {
+                    $('.date' + mcnum + '').html(array2['' + index2 + '']);
+                    index2++;
+                    $('.time' + mcnum + '').html(array2['' + index2 + '']);
+                    index2++;
                 }
-            });
-        }
 
-        //날짜 갱신★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
-
-        function updateDate() {
-            $.ajax({
-                url: "/getdate.php",
-                type: "post",
-                cache: false,
-                success: function(date) { // getserver.php 파일에서 echo 결과값이 data 임
-
-                    var array2 = JSON.parse(date);
-                    let index2 = 0;
-
-                    for (let mcnum = 1; mcnum <= 19; mcnum++) {
-                        $('.date' + mcnum + '').html(array2['' + index2 + '']);
-                        index2++;
-                        $('.time' + mcnum + '').html(array2['' + index2 + '']);
-                        index2++;
-                    }
-
-                }
-            });
-            timerID2 = setTimeout("updateDate()", 1000); // 1초 단위로 갱신 처리
-        }
+            }
+        });
+        timerID2 = setTimeout("updateDate()", 1000); // 1초 단위로 갱신 처리
+    }
     </script>
 </body>
 
