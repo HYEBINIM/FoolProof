@@ -257,8 +257,9 @@ table {
 
 .card_date {
     display: flex;
-    align-items: flex-end;
     flex-direction: column;
+    align-items: flex-end;
+    justify-content: center !important;
     color: var(--text-color2);
 }
 
@@ -313,6 +314,10 @@ table {
     letter-spacing: 1px;
 }
 
+.value_name2 {
+    display: none;
+}
+
 .value_text {
     width: 50px;
     font-size: 14px;
@@ -326,4 +331,240 @@ table {
 
 .space_little {
     margin-right: 1px;
+}
+
+@media all and (min-width:1201px) and (max-width:1635px) {
+    .title {
+        min-width: auto;
+        min-height: calc(20% - 1vw);
+        padding: 0px 10px;
+    }
+
+    .title_top {
+        font-size: var(--font-size-17);
+        height: 45px;
+        line-height: 55px;
+    }
+
+    .title_item {
+        height: calc(100% - 45px - 20px);
+        margin-top: 10px;
+        margin-bottom: 10px;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+    }
+
+    .title_bold {
+        margin-top: 2px;
+        margin-bottom: 2px;
+        color: var(--text-color4);
+        font-size: 11px;
+    }
+
+    .title_text {
+        margin-bottom: 2px;
+        font-weight: 600;
+        font-size: var(--font-size-17);
+        font-family: SCDream7;
+        color: var(--text-color2);
+    }
+
+    .card {
+        width: calc(20% - 1vw);
+        min-width: auto;
+        min-height: calc(20% - 1vw);
+        padding: 0px 10px;
+    }
+
+    .card_top {
+        height: 45px;
+    }
+
+    .machine {
+        height: 45px;
+        font-size: var(--font-size-17);
+        line-height: 53px;
+    }
+
+    .card_date {
+        display: flex;
+        align-items: flex-end;
+        flex-direction: column;
+        color: var(--text-color2);
+    }
+
+    .date_item {
+        color: var(--text-color2);
+        font-size: 10px;
+        letter-spacing: 0px;
+        font-weight: 600;
+    }
+
+    .time_item {
+        color: var(--text-color2);
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .value {
+        height: calc(100% - 45px - 30px);
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .value_name {
+        display: none;
+    }
+
+    .value_name2 {
+        width: 40px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-color4);
+        margin-left: 3px;
+    }
+
+    .value_text {
+        width: 45px;
+        font-size: 12px;
+    }
+
+}
+
+/* 모바일 가로 & 테블릿 세로 (해상도 480px ~ 767px)*/
+@media all and (min-width:676px) and (max-width:1200px) {
+    .panel {
+        height: auto;
+    }
+
+    .title {
+        width: calc(50% - 1vw);
+        min-width: auto;
+        min-height: calc(20% - 1vw);
+        padding: 0px 25px;
+    }
+
+    .card {
+        width: calc(50% - 1vw);
+        min-width: auto;
+        min-height: calc(20% - 1vw);
+        padding: 0px 25px;
+    }
+}
+
+/* 모바일 세로 (해상도 ~ 479px)*/
+@media all and (max-width:675px) {
+    .panel {
+        height: auto;
+    }
+
+    .logo {
+        width: 70px;
+    }
+
+    .menu {
+        width: calc(100% - 70px);
+    }
+
+    .menu_item {
+        font-size: 10px;
+        font-weight: 600;
+        font-family: SCDream4;
+    }
+
+    .title {
+        min-width: calc(100% - 10px);
+        min-height: calc(20% - 1vw);
+        padding: 0px 30px;
+        margin: 5px;
+    }
+
+    .title_top {
+        font-size: var(--font-size-17);
+        height: 45px;
+        line-height: 55px;
+    }
+
+    .title_item {
+        height: calc(100% - 45px - 20px);
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .title_bold {
+        margin-top: 0px;
+        margin-bottom: 0px;
+        font-size: 11px;
+    }
+
+    .title_text {
+        margin-bottom: 0px;
+        font-weight: 600;
+        font-size: var(--font-size-17);
+        font-family: SCDream7;
+        color: var(--text-color2);
+    }
+
+    .card {
+        min-width: calc(100% - 10px);
+        min-height: calc(20% - 20px);
+        padding: 0px 30px;
+        margin: 5px;
+    }
+
+    .card_top {
+        height: 45px;
+    }
+
+    .machine {
+        height: 45px;
+        font-size: var(--font-size-17);
+        line-height: 51px;
+    }
+
+    .card_date {
+        margin-top: 5px;
+        color: var(--text-color2);
+    }
+
+    .date_item {
+        color: var(--text-color2);
+        font-size: 10px;
+        letter-spacing: 0px;
+        font-weight: 600;
+    }
+
+    .time_item {
+        color: var(--text-color2);
+        font-size: 10px;
+        font-weight: 600;
+    }
+
+    .value {
+        height: calc(100% - 45px - 30px);
+        margin-top: 10px;
+        margin-bottom: 10px;
+    }
+
+    .value_name {
+        display: none;
+    }
+
+    .value_name2 {
+        width: 40px;
+        font-size: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        color: var(--text-color4);
+        margin-left: 3px;
+    }
+
+    .value_text {
+        width: 45px;
+        font-size: 12px;
+    }
 }

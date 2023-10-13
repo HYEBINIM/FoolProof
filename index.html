@@ -8,6 +8,7 @@
 <?php
 session_start();
 $conn = new mysqli("localhost", "server", "00000000", "dataset");
+date_default_timezone_set('Asia / Seoul');
 
 //순서
 // 금형1
@@ -278,11 +279,11 @@ if (file_exists($fileName)) {
                 <a class='logo_item' href="/index.html">EAST</a>
             </div>
             <div class="menu">
-                <a class='menu_item active' href="/index.html">메인 화면</a>
-                <a class='menu_item' href="/page/set1.html">최소 최대</a>
-                <a class='menu_item' href="/page/set2.html">분해능 설정</a>
-                <a class='menu_item' href="/page/set4.html">적정 온도</a>
-                <a class='menu_item' href="/page/set3.html">센서 편차</a>
+                <a class='menu_item active' href="/index.html">메인화면</a>
+                <a class='menu_item' href="/page/set1.html">최소최대</a>
+                <a class='menu_item' href="/page/set2.html">분해능설정</a>
+                <a class='menu_item' href="/page/set4.html">적정온도</a>
+                <a class='menu_item' href="/page/set3.html">센서편차</a>
                 <!-- <a class='menu_item' href="/page/theme.html">테마 설정</a> -->
             </div>
         </div>
@@ -333,352 +334,361 @@ if (file_exists($fileName)) {
                         <div class='value_item'>
                             <div class='status' id='" . $count . "_1'></div>
                             <div class='value_name letter-spacing'>고정금형</div>
+                            <div class='value_name2'>고정</div>
                             <div class='value_text res" . $count . "_1'></div>
                         </div>
                         <div class='value_item end'>
                             <div class='status' id='" . $count . "_2'></div>
                             <div class='value_name letter-spacing'>이동금형</div>
+                            <div class='value_name2'>이동</div>
                             <div class='value_text res" . $count . "_2'></div>
                         </div>
                         <div class='value_item'>
                             <div class='status' id='" . $count . "_3'></div>
                             <div class='value_name letter-spacing'>회전금형</div>
+                            <div class='value_name2'>회전</div>
                             <div class='value_text res" . $count . "_3'></div>
                         </div>
                         <div class='value_item end'>
                             <div class='status' id='" . $count . "_4'></div>
                             <div class='value_name'>호&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;퍼</div>
+                            <div class='value_name2'>호퍼</div>
                             <div class='value_text res" . $count . "_4'></div>
                         </div>
                         <div class='value_item'>
                             <div class='status' id='" . $count . "_5'></div>
                             <div class='value_name'><span class='space'>냉각수</span>IN</div>
+                            <div class='value_name2'>냉IN</div>
                             <div class='value_text res" . $count . "_5'></div>
                         </div>
                         <div class='value_item end'>
                             <div class='status' id='" . $count . "_6'></div>
                             <div class='value_name'>냉각OUT</div>
+                            <div class='value_name2'>냉OUT</div>
                             <div class='value_text res" . $count . "_6'></div>
                         </div>
                         <div class='value_item'>
                             <div class='status' id='" . $count . "_7'></div>
                             <div class='value_name'><span class='space_little'>온수기</span>IN</div>
+                            <div class='value_name2'>온IN</div>
                             <div class='value_text res" . $count . "_7'></div>
                         </div>
                             <div class='value_item end'>
                             <div class='status' id='" . $count . "_8'></div>
                             <div class='value_name'>온수OUT</div>
+                            <div class='value_name2'>온OUT</div>
                             <div class='value_text res" . $count . "_8'></div>
                         </div>
                         <div class='value_item'>
                             <div class='status' id='" . $count . "_9'></div>
                             <div class='value_name'>작&nbsp;&nbsp;동&nbsp;&nbsp;유</div>
+                            <div class='value_name2'>작동유</div>
                             <div class='value_text res" . $count . "_9'></div>
                         </div>
                     </div>
                     </div>
                         ";
 
-                //최소
-                if ($result001 < $min1) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_1').style.backgroundColor = '#3867D6';
-                                // 파란색
-                                </script>
-                                ";
-                }
-                //적정
-                else if ($result001 >= $min1 && $result001 <= $max1) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_1').style.backgroundColor = '#20BF6B';
-                                // 초록색
-                                </script>
-                                ";
-                }
-                //최대
-                else if ($result001 > $max1) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_1').style.backgroundColor = '#F03434';
-                                // 빨간색
-                                </script>
-                                ";
-                }
-                //에러
-                else {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_1').style.backgroundColor = '#29363d';
-                                //회색
-                                </script>
-                                ";
-                }
+                // //최소
+                // if ($result001 < $min1) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_1').style.backgroundColor = '#3867D6';
+                //                 // 파란색
+                //                 </script>
+                //                 ";
+                // }
+                // //적정
+                // else if ($result001 >= $min1 && $result001 <= $max1) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_1').style.backgroundColor = '#20BF6B';
+                //                 // 초록색
+                //                 </script>
+                //                 ";
+                // }
+                // //최대
+                // else if ($result001 > $max1) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_1').style.backgroundColor = '#F03434';
+                //                 // 빨간색
+                //                 </script>
+                //                 ";
+                // }
+                // //에러
+                // else {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_1').style.backgroundColor = '#29363d';
+                //                 //회색
+                //                 </script>
+                //                 ";
+                // }
 
-                //최소
-                if ($result002 < $min2) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_2').style.backgroundColor = '#3867D6';
-                                </script>
-                                ";
-                }
-                //적정
-                else if ($result002 >= $min2 && $result002 <= $max2) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_2').style.backgroundColor = '#20BF6B';
-                                </script>
-                                ";
-                }
-                //최대
-                else if ($result002 > $max2) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_2').style.backgroundColor = '#F03434';
-                                </script>
-                                ";
-                }
-                //에러
-                else {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_2').style.backgroundColor = '#29363d';
-                                </script>
-                                ";
-                }
+                // //최소
+                // if ($result002 < $min2) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_2').style.backgroundColor = '#3867D6';
+                //                 </script>
+                //                 ";
+                // }
+                // //적정
+                // else if ($result002 >= $min2 && $result002 <= $max2) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_2').style.backgroundColor = '#20BF6B';
+                //                 </script>
+                //                 ";
+                // }
+                // //최대
+                // else if ($result002 > $max2) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_2').style.backgroundColor = '#F03434';
+                //                 </script>
+                //                 ";
+                // }
+                // //에러
+                // else {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_2').style.backgroundColor = '#29363d';
+                //                 </script>
+                //                 ";
+                // }
 
-                //최소
-                if ($result003 < $min3) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_3').style.backgroundColor = '#3867D6';
-                                </script>
-                                ";
-                }
-                //적정
-                else if ($result003 >= $min3 && $result003 <= $max3) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_3').style.backgroundColor = '#20BF6B';
-                                </script>
-                                ";
-                }
-                //최대
-                else if ($result003 > $max3) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_3').style.backgroundColor = '#F03434';
-                                </script>
-                                ";
-                }
-                //에러
-                else {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_3').style.backgroundColor = '#29363d';
-                                </script>
-                                ";
-                }
+                // //최소
+                // if ($result003 < $min3) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_3').style.backgroundColor = '#3867D6';
+                //                 </script>
+                //                 ";
+                // }
+                // //적정
+                // else if ($result003 >= $min3 && $result003 <= $max3) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_3').style.backgroundColor = '#20BF6B';
+                //                 </script>
+                //                 ";
+                // }
+                // //최대
+                // else if ($result003 > $max3) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_3').style.backgroundColor = '#F03434';
+                //                 </script>
+                //                 ";
+                // }
+                // //에러
+                // else {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_3').style.backgroundColor = '#29363d';
+                //                 </script>
+                //                 ";
+                // }
 
-                //최소
-                if ($result004 < $min4) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_4').style.backgroundColor = '#3867D6';
-                                </script>
-                                ";
-                }
-                //적정
-                else if ($result004 >= $min4 && $result004 <= $max4) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_4').style.backgroundColor = '#20BF6B';
-                                </script>
-                                ";
-                }
-                //최대
-                else if ($result004 > $max4) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_4').style.backgroundColor = '#F03434';
-                                </script>
-                                ";
-                }
-                //에러
-                else {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_4').style.backgroundColor = '#29363d';
-                                </script>
-                                ";
-                }
+                // //최소
+                // if ($result004 < $min4) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_4').style.backgroundColor = '#3867D6';
+                //                 </script>
+                //                 ";
+                // }
+                // //적정
+                // else if ($result004 >= $min4 && $result004 <= $max4) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_4').style.backgroundColor = '#20BF6B';
+                //                 </script>
+                //                 ";
+                // }
+                // //최대
+                // else if ($result004 > $max4) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_4').style.backgroundColor = '#F03434';
+                //                 </script>
+                //                 ";
+                // }
+                // //에러
+                // else {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_4').style.backgroundColor = '#29363d';
+                //                 </script>
+                //                 ";
+                // }
 
-                //최소
-                if ($result005 < $min5) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_5').style.backgroundColor = '#3867D6';
-                                </script>
-                                ";
-                }
-                //적정
-                else if ($result005 >= $min5 && $result005 <= $max5) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_5').style.backgroundColor = '#20BF6B';
-                                </script>
-                                ";
-                }
-                //최대
-                else if ($result005 > $max5) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_5').style.backgroundColor = '#F03434';
-                                </script>
-                                ";
-                }
-                //에러
-                else {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_5').style.backgroundColor = '#29363d';
-                                </script>
-                                ";
-                }
+                // //최소
+                // if ($result005 < $min5) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_5').style.backgroundColor = '#3867D6';
+                //                 </script>
+                //                 ";
+                // }
+                // //적정
+                // else if ($result005 >= $min5 && $result005 <= $max5) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_5').style.backgroundColor = '#20BF6B';
+                //                 </script>
+                //                 ";
+                // }
+                // //최대
+                // else if ($result005 > $max5) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_5').style.backgroundColor = '#F03434';
+                //                 </script>
+                //                 ";
+                // }
+                // //에러
+                // else {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_5').style.backgroundColor = '#29363d';
+                //                 </script>
+                //                 ";
+                // }
 
-                //최소
-                if ($result006 < $min6) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_6').style.backgroundColor = '#3867D6';
-                                </script>
-                                ";
-                }
-                //적정
-                else if ($result006 >= $min6 && $result006 <= $max6) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_6').style.backgroundColor = '#20BF6B';
-                                </script>
-                                ";
-                }
-                //최대
-                else if ($result006 > $max6) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_6').style.backgroundColor = '#F03434';
-                                </script>
-                                ";
-                }
-                //에러
-                else {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_6').style.backgroundColor = '#29363d';
-                                </script>
-                                ";
-                }
+                // //최소
+                // if ($result006 < $min6) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_6').style.backgroundColor = '#3867D6';
+                //                 </script>
+                //                 ";
+                // }
+                // //적정
+                // else if ($result006 >= $min6 && $result006 <= $max6) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_6').style.backgroundColor = '#20BF6B';
+                //                 </script>
+                //                 ";
+                // }
+                // //최대
+                // else if ($result006 > $max6) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_6').style.backgroundColor = '#F03434';
+                //                 </script>
+                //                 ";
+                // }
+                // //에러
+                // else {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_6').style.backgroundColor = '#29363d';
+                //                 </script>
+                //                 ";
+                // }
 
-                //최소
-                if ($result007 < $min7) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_7').style.backgroundColor = '#3867D6';
-                                </script>
-                                ";
-                }
-                //적정
-                else if ($result007 >= $min7 && $result007 <= $max7) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_7').style.backgroundColor = '#20BF6B';
-                                </script>
-                                ";
-                }
-                //최대
-                else if ($result007 > $max7) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_7').style.backgroundColor = '#F03434';
-                                </script>
-                                ";
-                }
-                //에러
-                else {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_7').style.backgroundColor = '#29363d';
-                                </script>
-                                ";
-                }
+                // //최소
+                // if ($result007 < $min7) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_7').style.backgroundColor = '#3867D6';
+                //                 </script>
+                //                 ";
+                // }
+                // //적정
+                // else if ($result007 >= $min7 && $result007 <= $max7) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_7').style.backgroundColor = '#20BF6B';
+                //                 </script>
+                //                 ";
+                // }
+                // //최대
+                // else if ($result007 > $max7) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_7').style.backgroundColor = '#F03434';
+                //                 </script>
+                //                 ";
+                // }
+                // //에러
+                // else {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_7').style.backgroundColor = '#29363d';
+                //                 </script>
+                //                 ";
+                // }
 
-                //최소
-                if ($result008 < $min8) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_8').style.backgroundColor = '#3867D6';
-                                </script>
-                                ";
-                }
-                //적정
-                else if ($result008 >= $min8 && $result008 <= $max8) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_8').style.backgroundColor = '#20BF6B';
-                                </script>
-                                ";
-                }
-                //최대
-                else if ($result008 > $max8) {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_8').style.backgroundColor = '#F03434';
-                                </script>
-                                ";
-                }
-                //에러
-                else {
-                    echo "
-                                <script>
-                                document.getElementById('" . $count . "_8').style.backgroundColor = '#29363d';
-                                </script>
-                                ";
-                }
+                // //최소
+                // if ($result008 < $min8) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_8').style.backgroundColor = '#3867D6';
+                //                 </script>
+                //                 ";
+                // }
+                // //적정
+                // else if ($result008 >= $min8 && $result008 <= $max8) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_8').style.backgroundColor = '#20BF6B';
+                //                 </script>
+                //                 ";
+                // }
+                // //최대
+                // else if ($result008 > $max8) {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_8').style.backgroundColor = '#F03434';
+                //                 </script>
+                //                 ";
+                // }
+                // //에러
+                // else {
+                //     echo "
+                //                 <script>
+                //                 document.getElementById('" . $count . "_8').style.backgroundColor = '#29363d';
+                //                 </script>
+                //                 ";
+                // }
 
-                //최소
-                if ($result009 < $min9) {
-                    echo "
-                                                        <script>
-                                                        document.getElementById('" . $count . "_9').style.backgroundColor = '#3867D6';
-                                                        </script>
-                                                        ";
-                }
-                //적정
-                else if ($result009 >= $min9 && $result009 <= $max9) {
-                    echo "
-                                                        <script>
-                                                        document.getElementById('" . $count . "_9').style.backgroundColor = '#20BF6B';
-                                                        </script>
-                                                        ";
-                }
-                //최대
-                else if ($result009 > $max9) {
-                    echo "
-                                                        <script>
-                                                        document.getElementById('" . $count . "_9').style.backgroundColor = '#F03434';
-                                                        </script>
-                                                        ";
-                }
-                //에러
-                else {
-                    echo "
-                                                        <script>
-                                                        document.getElementById('" . $count . "_9').style.backgroundColor = '#29363d';
-                                                        </script>
-                                                        ";
-                }
+                // //최소
+                // if ($result009 < $min9) {
+                //     echo "
+                //                                         <script>
+                //                                         document.getElementById('" . $count . "_9').style.backgroundColor = '#3867D6';
+                //                                         </script>
+                //                                         ";
+                // }
+                // //적정
+                // else if ($result009 >= $min9 && $result009 <= $max9) {
+                //     echo "
+                //                                         <script>
+                //                                         document.getElementById('" . $count . "_9').style.backgroundColor = '#20BF6B';
+                //                                         </script>
+                //                                         ";
+                // }
+                // //최대
+                // else if ($result009 > $max9) {
+                //     echo "
+                //                                         <script>
+                //                                         document.getElementById('" . $count . "_9').style.backgroundColor = '#F03434';
+                //                                         </script>
+                //                                         ";
+                // }
+                // //에러
+                // else {
+                //     echo "
+                //                                         <script>
+                //                                         document.getElementById('" . $count . "_9').style.backgroundColor = '#29363d';
+                //                                         </script>
+                //                                         ";
+                // }
 
                 $sql02 = "select * from dr1 where id='" . $count . "'";
                 $res02 = mysqli_query($conn, $sql02);
@@ -840,7 +850,7 @@ if (file_exists($fileName)) {
                 var array = JSON.parse(data);
                 // console.log(array);
 
-                // console.log(data);
+                console.log(data);
 
                 // console.log(data);
                 // var arr = data.split(',');
@@ -851,6 +861,10 @@ if (file_exists($fileName)) {
                 for (let mcnum = 1; mcnum <= 19; mcnum++) {
                     for (let itemnum = 1; itemnum <= 9; itemnum++) {
                         $('.res' + mcnum + '_' + itemnum + '').html(array['' + index + '']);
+                        index++;
+                    }
+                    for (let itemnum = 1; itemnum <= 9; itemnum++) {
+                        $('#' + mcnum + '_' + itemnum + '').css('backgroundColor', (array['' + index + '']));
                         index++;
                     }
                 }
@@ -884,6 +898,8 @@ if (file_exists($fileName)) {
         });
         timerID2 = setTimeout("updateDate()", 1000); // 1초 단위로 갱신 처리
     }
+
+    //최대 최소★★★★★★★★★★★★★★★★★★★★★★★★★★★★★
     </script>
 </body>
 

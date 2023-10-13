@@ -231,6 +231,33 @@ for ($count = 1; $count <= 19; $count++) {
         array_push($data, ${'res' . $count . '_8'});
         array_push($data, ${'res' . $count . '_9'});
     }
+
+    for ($color = 1; $color <= 9; $color++) {
+        //데이터 없음(회색)
+        if (${'res' . $count . '_' . $color} == "ㅡ") {
+            array_push($data, 'grey');
+        }
+        //최소(파랑)
+        else if (${'res' . $count . '_' . $color} < ${'min' . $color}) {
+            array_push($data, '#3867D6');
+        }
+        //적정(초록)
+        else if (${'res' . $count . '_' . $color} >= ${'min' . $color} && ${'res' . $count . '_' . $color} <= ${'max' . $color}) {
+            array_push($data, '#20BF6B');
+        }
+        //최대(빨강)
+        else if (${'res' . $count . '_' . $color} > ${'max' . $color}) {
+            array_push($data, '#F03434');
+        }
+        //에러(노랑)
+        else {
+            array_push($data, 'yellow');
+        }
+    }
 }
 
 echo json_encode($data);
+
+//코멘트
+//한눈에 보이므로 호기 상태를 볼 필요가 없다고 판단함
+//검사시간을 통해 현재시간과 비교해 검사 상태만 표시해주면 될듯
